@@ -11,6 +11,9 @@ using namespace std;
 
 struct Buffer{
     string contents;
+    bool blitContents = true;
+    int cursorY = 0;
+    int cursorX = 0;
     Buffer(char* fname){
         ifstream in(fname);
         contents = string(std::istreambuf_iterator<char>(in),
@@ -21,8 +24,12 @@ struct Buffer{
 enum Command {QUIT, UNKNOWN};
 
 void display(Buffer &b){
-    clear();
-    addstr(b.contents.c_str());
+    if(b.blitContents){
+        clear();
+        addstr(b.contents.c_str());
+        b.blitContents = false;
+    }
+    move(b.cursorY, b.cursorX);
 	refresh();
 }
 
@@ -69,13 +76,52 @@ Command ex_command_mode(){
     return UNKNOWN;
 }
 
-bool handle_commands(Buffer b){
+enum Direction {UP, DOWN, LEFT, RIGHT};
+
+void moveCursor(Buffer &buf, Direction d){
+    switch(d){
+        case UP:
+            if(buf.cursorY>0){
+                buf.cursorY--;
+            }
+            break;
+        case DOWN:
+            buf.cursorY++;
+            break;
+        case LEFT:
+            if(buf.cursorX>0) buf.cursorX--;
+            break;
+        case RIGHT:
+            buf.cursorX++;
+        default:
+            break;
+    }
+    refresh();
+}
+
+bool handle_commands(Buffer &b){
      char ch = getch();
      if(ch == ':'){
          Command cmd = ex_command_mode();
          if(cmd == QUIT){
              return true;
          }
+     }
+     switch(ch){
+         case 'k':
+             moveCursor(b, UP);
+             break;
+         case 'j':
+             moveCursor(b, DOWN);
+             break;
+         case 'h':
+             moveCursor(b, LEFT);
+             break;
+         case 'l':
+             moveCursor(b, RIGHT);
+             break;
+         default:
+             break;
      }
 
      return false;
@@ -97,5 +143,3 @@ int main(int argc, char** argv){
 
 	return 0;
 }
-
-

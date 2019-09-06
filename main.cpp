@@ -2,6 +2,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 
 #include <unistd.h>
 
@@ -9,11 +10,14 @@
 
 using namespace std;
 
+enum BufferMode {INSERT, NORMAL, COMMAND};
+
 struct Buffer{
     string contents;
     bool blitContents = true;
     int cursorY = 0;
     int cursorX = 0;
+    BufferMode mode = NORMAL;
     Buffer(char* fname){
         ifstream in(fname);
         contents = string(std::istreambuf_iterator<char>(in),
@@ -99,6 +103,55 @@ void moveCursor(Buffer &buf, Direction d){
     refresh();
 }
 
+void cursorUnderscore(){
+    printf("\x1b[\x34 q");
+    std::cout.flush();
+}
+
+void cursorBlock(){
+    printf("\x1b[\x32 q");
+    std::cout.flush();
+}
+
+void cursorLine(){
+    printf("\x1b[\x36 q");
+    std::cout.flush();
+}
+
+void insertModeInput(Buffer &b, char ch){
+    cursorLine();
+    if(ch == 27){
+        b.mode = NORMAL;
+        cursorBlock();
+    }
+
+}
+
+void normalModeInput(Buffer &b, char ch){
+    switch(ch){
+        case 'k':
+            moveCursor(b, UP);
+            break;
+        case 'j':
+            moveCursor(b, DOWN);
+            break;
+        case 'h':
+            moveCursor(b, LEFT);
+            break;
+        case 'l':
+            moveCursor(b, RIGHT);
+            break;
+        case 'c':
+            cursorUnderscore();
+            break;
+        case 'i':
+            b.mode = INSERT;
+            cursorLine();
+        default:
+            break;
+    }
+}
+
 bool handle_commands(Buffer &b){
      char ch = getch();
      if(ch == ':'){
@@ -107,22 +160,9 @@ bool handle_commands(Buffer &b){
              return true;
          }
      }
-     switch(ch){
-         case 'k':
-             moveCursor(b, UP);
-             break;
-         case 'j':
-             moveCursor(b, DOWN);
-             break;
-         case 'h':
-             moveCursor(b, LEFT);
-             break;
-         case 'l':
-             moveCursor(b, RIGHT);
-             break;
-         default:
-             break;
-     }
+
+     if(b.mode == NORMAL) normalModeInput(b, ch);
+     if(b.mode == INSERT) insertModeInput(b, ch);
 
      return false;
 }
@@ -140,6 +180,7 @@ int main(int argc, char** argv){
         quit = handle_commands(buffer);
     } while(!quit);
 	endwin();			/* End curses mode		  */
+    cursorBlock();
 
 	return 0;
 }

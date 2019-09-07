@@ -1,36 +1,24 @@
 #include <fstream>
+#include <vector>
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-
+#include <sstream>      // std::stringstream
 #include <unistd.h>
 
 #include <ncurses.h>
 
+#include "buffer.h"
+
 using namespace std;
-
-enum BufferMode {INSERT, NORMAL, COMMAND};
-
-struct Buffer{
-    string contents;
-    bool blitContents = true;
-    int cursorY = 0;
-    int cursorX = 0;
-    BufferMode mode = NORMAL;
-    Buffer(char* fname){
-        ifstream in(fname);
-        contents = string(std::istreambuf_iterator<char>(in),
-                std::istreambuf_iterator<char>());
-    }
-};
 
 enum Command {QUIT, UNKNOWN};
 
 void display(Buffer &b){
     if(b.blitContents){
         clear();
-        addstr(b.contents.c_str());
+        addstr(b.toString().c_str());
         b.blitContents = false;
     }
     move(b.cursorY, b.cursorX);
@@ -120,11 +108,14 @@ void cursorLine(){
 
 void insertModeInput(Buffer &b, char ch){
     cursorLine();
-    if(ch == 27){
-        b.mode = NORMAL;
-        cursorBlock();
+    switch(ch){
+        case 27:
+            b.mode = NORMAL;
+            cursorBlock();
+            break;
+        default:
+            b.insertAtCursor(ch);
     }
-
 }
 
 void normalModeInput(Buffer &b, char ch){
@@ -162,7 +153,7 @@ bool handle_commands(Buffer &b){
      }
 
      if(b.mode == NORMAL) normalModeInput(b, ch);
-     if(b.mode == INSERT) insertModeInput(b, ch);
+     else if(b.mode == INSERT) insertModeInput(b, ch);
 
      return false;
 }

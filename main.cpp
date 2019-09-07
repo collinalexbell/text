@@ -68,29 +68,6 @@ Command ex_command_mode(){
     return UNKNOWN;
 }
 
-enum Direction {UP, DOWN, LEFT, RIGHT};
-
-void moveCursor(Buffer &buf, Direction d){
-    switch(d){
-        case UP:
-            if(buf.cursorY>0){
-                buf.cursorY--;
-            }
-            break;
-        case DOWN:
-            buf.cursorY++;
-            break;
-        case LEFT:
-            if(buf.cursorX>0) buf.cursorX--;
-            break;
-        case RIGHT:
-            buf.cursorX++;
-        default:
-            break;
-    }
-    refresh();
-}
-
 void cursorUnderscore(){
     printf("\x1b[\x34 q");
     std::cout.flush();
@@ -121,16 +98,16 @@ void insertModeInput(Buffer &b, char ch){
 void normalModeInput(Buffer &b, char ch){
     switch(ch){
         case 'k':
-            moveCursor(b, UP);
+            b.moveCursor(UP);
             break;
         case 'j':
-            moveCursor(b, DOWN);
+            b.moveCursor(DOWN);
             break;
         case 'h':
-            moveCursor(b, LEFT);
+            b.moveCursor(LEFT);
             break;
         case 'l':
-            moveCursor(b, RIGHT);
+            b.moveCursor(RIGHT);
             break;
         case 'c':
             cursorUnderscore();

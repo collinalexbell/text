@@ -11,6 +11,7 @@
 using namespace std;
 
 enum BufferMode {INSERT, NORMAL, COMMAND};
+enum Direction {UP, DOWN, LEFT, RIGHT};
 
 struct Buffer{
     vector<string> contents;
@@ -48,6 +49,26 @@ struct Buffer{
             rv.append(contents[i]);
         }
         return rv;
+    }
+
+    void moveCursor(Direction d){
+        switch(d){
+            case UP:
+                if(cursorY>0){
+                    cursorY--;
+                }
+                break;
+            case DOWN:
+                cursorY++;
+                break;
+            case LEFT:
+                if(cursorX>0) cursorX--;
+                break;
+            case RIGHT:
+                cursorX++;
+            default:
+                break;
+        }
     }
 };
 

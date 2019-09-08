@@ -39,11 +39,6 @@ struct Buffer{
         while (getline(ss, lineBuffer)){
             contents.push_back(string(lineBuffer));
         }
-
-        //getline does not return an empty line after \n
-        if(raw.back() == '\n'){
-            contents.push_back("");
-        }
     }
 
     void insertAtCursor(char ch){
@@ -56,15 +51,22 @@ struct Buffer{
         blitContents = true;
     }
 
-    string toString(){
+    string toString(int offset, int numRows){
         string rv = string();
-        for(int i=0; i<contents.size(); i++){
-            if(i>0 && i<contents.size()-1){
+        if(numRows+offset > contents.size()){
+            numRows = contents.size()-offset;
+        }
+        for(int i=offset; i<numRows+offset; i++){
+            if(i>offset && i<contents.size()){
                 rv.append("\n");
             }
             rv.append(contents[i]);
         }
         return rv;
+    }
+
+    string toString(){
+        return toString(0, contents.size());
     }
 
     void resetXCursorToCacheIfNeeded(){

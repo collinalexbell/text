@@ -3,7 +3,7 @@
 
 TEST_CASE("moveCursor doesn't allow movement out of contents bounds",
         "[buffer]"){
-    string contents = "foo bar\nbaz bin\n";
+    string contents = "foo bar\nbaz bin\n\n";
     Buffer b(contents);
 
     //up
@@ -31,12 +31,5 @@ TEST_CASE("moveCursor doesn't allow movement out of contents bounds",
     REQUIRE_THROWS(b.moveCursor(RIGHT));
 
 
-}
-
-TEST_CASE("buffer counts 3 newlines as 4 seperate lines", "[buffer]"){
-    string contents = "\n\n\n";
-    Buffer b(contents);
-
-    REQUIRE(b.contents.size() == 4);
 }
 

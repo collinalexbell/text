@@ -1,5 +1,5 @@
 all: main.cpp buffer.h
-	g++ main.cpp -lncurses -o text
+	g++ main.cpp -lncurses -o text -g
 
 test_cpp: test.cpp
 

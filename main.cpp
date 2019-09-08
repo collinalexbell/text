@@ -9,19 +9,23 @@
 
 #include <ncurses.h>
 
+#include "window.h"
 #include "buffer.h"
 
 using namespace std;
 
 enum Command {QUIT, UNKNOWN};
 
-void display(Buffer &b){
+void display(Window &w, Buffer &b){
+    b.blitContents |= w.moveCursor(b.cursorY);
+
     if(b.blitContents){
         clear();
-        addstr(b.toString().c_str());
+        addstr(b.toString(w.rowOffset, w.height).c_str());
         b.blitContents = false;
     }
-    move(b.cursorY, b.cursorX);
+
+    move(b.cursorY-w.rowOffset, b.cursorX);
 	refresh();
 }
 
@@ -95,20 +99,24 @@ void insertModeInput(Buffer &b, char ch){
     }
 }
 
+void moveCursor(Buffer &b, Direction d){
+    b.moveCursor(d);
+}
+
 void normalModeInput(Buffer &b, char ch){
     try{
         switch(ch){
             case 'k':
-                b.moveCursor(UP);
+                moveCursor(b, UP);
                 break;
             case 'j':
-                b.moveCursor(DOWN);
+                moveCursor(b, DOWN);
                 break;
             case 'h':
-                b.moveCursor(LEFT);
+                moveCursor(b, LEFT);
                 break;
             case 'l':
-                b.moveCursor(RIGHT);
+                moveCursor(b, RIGHT);
                 break;
             case 'c':
                 cursorUnderscore();
@@ -143,16 +151,17 @@ int main(int argc, char** argv){
     char* fname = getFileToOpen(argc, argv);
     Buffer buffer = Buffer(fname);
     initscr();			/* Start curses mode 		  */
+    Window window = Window();
     noecho();
 
     bool quit = false;
 
     do{
-        display(buffer);
+        display(window, buffer);
         quit = handle_commands(buffer);
     } while(!quit);
 	endwin();			/* End curses mode		  */
     cursorBlock();
 
-	return 0;
+    return 0;
 }

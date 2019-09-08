@@ -96,27 +96,31 @@ void insertModeInput(Buffer &b, char ch){
 }
 
 void normalModeInput(Buffer &b, char ch){
-    switch(ch){
-        case 'k':
-            b.moveCursor(UP);
-            break;
-        case 'j':
-            b.moveCursor(DOWN);
-            break;
-        case 'h':
-            b.moveCursor(LEFT);
-            break;
-        case 'l':
-            b.moveCursor(RIGHT);
-            break;
-        case 'c':
-            cursorUnderscore();
-            break;
-        case 'i':
-            b.mode = INSERT;
-            cursorLine();
-        default:
-            break;
+    try{
+        switch(ch){
+            case 'k':
+                b.moveCursor(UP);
+                break;
+            case 'j':
+                b.moveCursor(DOWN);
+                break;
+            case 'h':
+                b.moveCursor(LEFT);
+                break;
+            case 'l':
+                b.moveCursor(RIGHT);
+                break;
+            case 'c':
+                cursorUnderscore();
+                break;
+            case 'i':
+                b.mode = INSERT;
+                cursorLine();
+            default:
+                break;
+        }
+    } catch(const char* e){
+        beep();
     }
 }
 

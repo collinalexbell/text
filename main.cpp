@@ -103,6 +103,10 @@ void moveCursor(Buffer &b, Direction d){
     b.moveCursor(d);
 }
 
+void moveCursor(Buffer &b, int row){
+    b.moveCursor(row);
+}
+
 void normalModeInput(Buffer &b, char ch){
     try{
         switch(ch){
@@ -118,12 +122,16 @@ void normalModeInput(Buffer &b, char ch){
             case 'l':
                 moveCursor(b, RIGHT);
                 break;
+            case 'G':
+                moveCursor(b, b.contents.size()-1);
+                break;
             case 'c':
                 cursorUnderscore();
                 break;
             case 'i':
                 b.mode = INSERT;
                 cursorLine();
+                break;
             default:
                 break;
         }

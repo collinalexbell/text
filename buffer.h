@@ -117,6 +117,12 @@ struct Buffer{
                 break;
         }
     }
+
+    void moveCursor(int row){
+        if(row > 0 && row < contents.size()){
+            cursorY = row;
+        }
+    }
 };
 
 #endif

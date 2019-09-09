@@ -14,7 +14,7 @@ struct Window {
 
     bool moveCursor(int cursorY){
         if(cursorY >= rowOffset+height){
-            rowOffset++;
+            rowOffset = cursorY-(height-1);
             return true;
         }
 

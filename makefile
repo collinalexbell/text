@@ -1,5 +1,11 @@
-all: main.cpp buffer.h
-	g++ main.cpp -lncurses -o text -g
+all: main.cpp buffer.h commands cursor
+	g++ main.cpp commands.o cursor.o -lncurses -o text -g
+
+commands: commands.cpp commands.h
+	g++ -c commands.cpp
+
+cursor: cursor.cpp cursor.h
+	g++ -c cursor.cpp
 
 test_cpp: test.cpp
 

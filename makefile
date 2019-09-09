@@ -1,16 +1,19 @@
-all: main.cpp buffer.h commands cursor
-	g++ main.cpp commands.o cursor.o -lncurses -o text -g
+SRC = src
+I = include
 
-commands: commands.cpp commands.h
-	g++ -c commands.cpp
+all: $(SRC)/main.cpp $(I)/buffer.h commands cursor
+	g++ $(SRC)/main.cpp commands.o cursor.o -lncurses -o text -g -I$(I)
 
-cursor: cursor.cpp cursor.h
-	g++ -c cursor.cpp
+commands: $(SRC)/commands.cpp $(I)/commands.h
+	g++  -c $(SRC)/commands.cpp -I$(I)
 
-test_cpp: test.cpp
+cursor: $(SRC)/cursor.cpp $(I)/cursor.h
+	g++ -c $(SRC)/cursor.cpp -I$(I)
 
-test: test_cpp buffer.h bufferTest.cpp
-	g++ -c bufferTest.cpp
+test_cpp: $(SRC)/test.cpp
+
+test: $(I)/test_cpp buffer.h $(SRC)/bufferTest.cpp
+	g++ -c $(SRC)/bufferTest.cpp -I$(I)
 	g++ test.o bufferTest.o -o test
 	./test
 

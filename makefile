@@ -1,9 +1,9 @@
 SRC = src
 I = include
 
-all: exe clean
+all: exe
 
-exe: $(SRC)/main.cpp $(I)/buffer.h commands cursor
+exe: $(SRC)/main.cpp $(I)/buffer.h $(I)/window.h commands cursor
 	g++ $(SRC)/main.cpp commands.o cursor.o -lncurses -o text -g -I$(I)
 
 commands: $(SRC)/commands.cpp $(I)/commands.h

@@ -53,37 +53,28 @@ Command ex_command_mode(){ int row, col;
     return UNKNOWN;
 }
 
-void normalModeInput(Buffer &b, char ch){
+void normalModeInput(Buffer &b, char ch, string state){
+    state += ch;
     try{
-        switch(ch){
-            case 'k':
-                moveCursor(b, UP);
-                break;
-            case 'j':
-                moveCursor(b, DOWN);
-                break;
-            case 'h':
-                moveCursor(b, LEFT);
-                break;
-            case 'l':
-                moveCursor(b, RIGHT);
-                break;
-            case 'G':
-                moveCursor(b, b.contents.size()-1);
-                break;
-            case 'c':
-                cursorUnderscore();
-                break;
-            case 'i':
-                b.mode = INSERT;
-                cursorLine();
-                break;
-            default:
-                break;
+        if(state == "k") moveCursor(b, UP);
+        if(state == "j") moveCursor(b, DOWN);
+        if(state == "h") moveCursor(b, LEFT);
+        if(state == "l") moveCursor(b, RIGHT);
+        if(state == "G") moveCursor(b, b.contents.size()-1);
+        if(state == "c") cursorUnderscore();
+        if(state == "i") {
+            b.mode = INSERT;
+            cursorLine();
         }
+        if(state == "g") normalModeInput(b, getch(), state);
+        if(state == "gg") moveCursor(b, 0);
     } catch(const char* e){
         beep();
     }
+}
+
+void normalModeInput(Buffer &b, char ch){
+    normalModeInput(b, ch, "");
 }
 
 void insertModeInput(Buffer &b, char ch){

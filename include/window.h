@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <ncurses.h>
+#include <stdio.h>
 
 struct Window {
     int height, width;
@@ -19,7 +20,7 @@ struct Window {
         }
 
         if(cursorY >= 0 && cursorY < rowOffset){
-            rowOffset--;
+            rowOffset = cursorY;
             return true;
         }
         return false;

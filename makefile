@@ -13,3 +13,7 @@ test: test_cpp buffer.h bufferTest.cpp
 	g++ -c bufferTest.cpp
 	g++ test.o bufferTest.o -o test
 	./test
+
+clean:
+	rm *.o
+	rm test

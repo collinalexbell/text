@@ -13,8 +13,9 @@ cursor: $(SRC)/cursor.cpp $(I)/cursor.h
 	g++ -c $(SRC)/cursor.cpp -I$(I)
 
 test_cpp: $(SRC)/test.cpp
+	g++ -c $(SRC)/test.cpp -I$(I)
 
-test: $(I)/test_cpp buffer.h $(SRC)/bufferTest.cpp
+test: test_cpp $(I)/buffer.h $(SRC)/bufferTest.cpp
 	g++ -c $(SRC)/bufferTest.cpp -I$(I)
 	g++ test.o bufferTest.o -o test
 	./test

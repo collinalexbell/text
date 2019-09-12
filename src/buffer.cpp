@@ -4,11 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <regex>
 #include <sstream>      // std::stringstream
+
 
 #include "buffer.h"
 
 using namespace std;
+
+int Buffer::findBeginningOfLine(int lineNo){
+    string line = contents[lineNo];
+    smatch match;
+    regex r("\\S");
+    regex_search(line, match, r);
+    if(match.empty()) return 0;
+    return match.position();
+}
 
 Buffer::Buffer(string contents){
     initContents(contents);
@@ -99,6 +110,10 @@ void Buffer::moveCursor(Direction d, int amount){
             if(cursorX + amount >= contents[cursorY].size())
                 throw "can not move cursor right";
             cursorX += amount;
+            cursorXReset = -1; //sentinel
+            break;
+        case BEGINNING_OF_LINE:
+            cursorX = findBeginningOfLine(cursorY);
             cursorXReset = -1; //sentinel
             break;
         default:

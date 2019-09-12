@@ -68,6 +68,11 @@ void normalModeInput(Buffer &b, char ch, string state){
             b.mode = INSERT;
             cursorLine();
         }
+        if(state == "I") {
+            b.mode = INSERT;
+            b.moveCursor(BEGINNING_OF_LINE);
+            cursorLine();
+        }
         if(state == "g") normalModeInput(b, getch(), state);
         if(state == "gg") moveCursor(b, 0);
     } catch(const char* e){
@@ -84,9 +89,11 @@ void insertModeInput(Buffer &b, char ch){
     switch(ch){
         case 27:
             b.mode = NORMAL;
+            if (b.cursorX > 0) b.moveCursor(LEFT);
             cursorBlock();
             break;
         default:
             b.insertAtCursor(ch);
+            b.moveCursor(RIGHT);
     }
 }

@@ -8,7 +8,7 @@ using namespace std;
 
 
 enum BufferMode {INSERT, NORMAL, COMMAND};
-enum Direction {UP, DOWN, LEFT, RIGHT};
+enum Direction {UP, DOWN, LEFT, RIGHT, BEGINNING_OF_LINE};
 
 struct Buffer{
     int cursorXReset = 0;
@@ -20,6 +20,7 @@ struct Buffer{
 
     Buffer(string contents);
     Buffer(char* fname);
+    int findBeginningOfLine(int lineNo);
     void initContents(string raw);
     void insertAtCursor(char ch);
     string toString(int offset, int numRows);

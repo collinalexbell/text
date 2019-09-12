@@ -4,6 +4,8 @@
 #include <ncurses.h>
 
 using namespace std;
+void normalModeInput(Buffer &b, char ch);
+void insertModeInput(Buffer &b, char ch);
 
 bool handle_commands(Buffer &b){
      char ch = getch();

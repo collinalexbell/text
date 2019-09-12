@@ -1,10 +1,12 @@
 SRC = src
 I = include
 
-all: exe
 
-exe: $(SRC)/main.cpp $(I)/buffer.h $(I)/window.h commands cursor
-	g++ $(SRC)/main.cpp commands.o cursor.o -lncurses -o text -g -I$(I)
+all: $(SRC)/main.cpp $(I)/window.h commands cursor buffer
+	g++ $(SRC)/main.cpp buffer.o commands.o cursor.o -lncurses -o text -g -I$(I)
+
+buffer: $(SRC)/buffer.cpp $(I)/buffer.h
+	g++ -c $(SRC)/buffer.cpp -I$(I)
 
 commands: $(SRC)/commands.cpp $(I)/commands.h
 	g++  -c $(SRC)/commands.cpp -I$(I)

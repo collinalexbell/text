@@ -21,6 +21,15 @@ int Buffer::findBeginningOfLine(int lineNo){
     return match.position();
 }
 
+int Buffer::findEndOfLine(int lineNo){
+    string line = contents[lineNo];
+    smatch match;
+    regex r("\\S");
+    regex_search(line, match, r);
+    if(match.empty()) return 0;
+    return match.position(match.size()-1);
+}
+
 Buffer::Buffer(string contents){
     initContents(contents);
 }
@@ -47,7 +56,7 @@ void Buffer::insertAtCursor(char ch){
     if(lineExists && colExists){
         contents[cursorY].insert(cursorX, 1, ch);
     }
-    blitContents = true;
+    contentsChangedB = true;
 }
 
 string Buffer::toString(int offset, int numRows){
@@ -107,7 +116,7 @@ void Buffer::moveCursor(Direction d, int amount){
             cursorXReset = -1; //sentinel
             break;
         case RIGHT:
-            if(cursorX + amount >= contents[cursorY].size())
+            if(cursorX + amount > contents[cursorY].size())
                 throw "can not move cursor right";
             cursorX += amount;
             cursorXReset = -1; //sentinel
@@ -115,6 +124,10 @@ void Buffer::moveCursor(Direction d, int amount){
         case BEGINNING_OF_LINE:
             cursorX = findBeginningOfLine(cursorY);
             cursorXReset = -1; //sentinel
+            break;
+        case END_OF_LINE:
+            cursorX = findEndOfLine(cursorY);
+            cursorXReset = -1;
             break;
         default:
             break;

@@ -1,30 +1,33 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include "buffer.h"
 #include <ncurses.h>
 #include <stdio.h>
 
+
+struct BufferBlit {
+    Buffer *buf = NULL;
+    int start, end, cursorX, cursorY;
+    bool moveCursor, shouldBlit;
+};
+
 struct Window {
+
     int height, width;
-    int rowOffset;
+    int nRowsBlitted;
+
+    BufferBlit last;
 
     Window(){
-        rowOffset = 0;
         getmaxyx(stdscr, height, width);
     }
-
-    bool moveCursor(int cursorY){
-        if(cursorY >= rowOffset+height){
-            rowOffset = cursorY-(height-1);
-            return true;
-        }
-
-        if(cursorY >= 0 && cursorY < rowOffset){
-            rowOffset = cursorY;
-            return true;
-        }
-        return false;
-    }
+    void blit(BufferBlit b);
+    int computeScroll(Buffer &b);
+    void computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv);
+    BufferBlit computeBlit(Buffer &b);
+    void display(Buffer &b);
+    void moveCursor(BufferBlit b);
 };
 
 #endif

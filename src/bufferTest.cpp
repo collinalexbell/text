@@ -27,7 +27,7 @@ TEST_CASE("moveCursor doesn't allow movement out of contents bounds",
     //right
     b.moveCursor(UP, 2); //setup (0,2) now
     b.moveCursor(LEFT); //setup (0,0) now
-    REQUIRE_NOTHROW(b.moveCursor(RIGHT, 6));
+    REQUIRE_NOTHROW(b.moveCursor(RIGHT, 7));
     REQUIRE_THROWS(b.moveCursor(RIGHT));
 
 

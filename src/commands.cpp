@@ -97,6 +97,11 @@ void normalModeInput(Buffer &b, char ch){
 void insertModeInput(Buffer &b, char ch){
     cursorLine();
     switch(ch){
+        case 8:
+        case 127:
+            b.moveCursor(LEFT);
+            b.deleteAtCursor();
+            break;
         case 27:
             b.mode = NORMAL;
             if (b.cursorX > 0) b.moveCursor(LEFT);

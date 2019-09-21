@@ -28,6 +28,7 @@ struct Buffer{
     Buffer(string contents);
     Buffer(char* fname);
     int cursorXBound(int lineNo);
+    void deleteAtCursor();
     int findBeginningOfLine(int lineNo);
     int findEndOfLine(int lineNo);
     void initContents(string raw);

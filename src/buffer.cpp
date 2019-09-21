@@ -42,6 +42,14 @@ Buffer::Buffer(char* fname){
     initContents(raw);
 }
 
+void Buffer::deleteAtCursor(){
+    if(cursorY < contents.size() &&
+            cursorX < contents[cursorY].size()){
+        contents[cursorY].erase(cursorX, 1);
+        contentsChangedB = true;
+    }
+}
+
 void Buffer::initContents(string raw){
     string lineBuffer;
     stringstream ss(raw);

@@ -58,6 +58,19 @@ Command ex_command_mode(){ int row, col;
 void normalModeInput(Buffer &b, char ch, string state){
     state += ch;
     try{
+        if(state == "O"){
+            b.insertLineAboveCursor();
+            b.moveCursor(BEGINNING_OF_LINE);
+            b.mode = INSERT;
+            cursorLine();
+        }
+        if(state == "o"){
+            b.moveCursor(END_OF_LINE);
+            b.insertLineAfterCursor();
+            b.mode = INSERT;
+            cursorLine();
+            b.moveCursor(DOWN);
+        }
         if(state == "k") moveCursor(b, UP);
         if(state == "j") moveCursor(b, DOWN);
         if(state == "J") b.joinLineAtCursor();

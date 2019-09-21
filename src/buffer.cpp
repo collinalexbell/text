@@ -66,6 +66,11 @@ void Buffer::initContents(string raw){
     }
 }
 
+void Buffer::insertLineAboveCursor(){
+    contents.insert(contents.begin()+cursorY, "");
+    contentsChangedB = true;
+}
+
 void Buffer::insertLineAfterCursor(){
     string line = contents[cursorY].substr(cursorX);
     contents[cursorY].erase(cursorX);

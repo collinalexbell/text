@@ -94,6 +94,14 @@ void Buffer::moveXCursorToLineEndAndCacheIfNeeded(){
     }
 }
 
+int Buffer::cursorXBound(int lineNo){
+    int bound = contents[lineNo].size();
+    if(mode == NORMAL)
+        //Should be able to insert at line.size(), but not scroll to it.
+        bound--;
+    return bound;
+}
+
 void Buffer::moveCursor(Direction d, int amount){
     switch(d){
         case UP:
@@ -117,7 +125,7 @@ void Buffer::moveCursor(Direction d, int amount){
             cursorXReset = -1; //sentinel
             break;
         case RIGHT:
-            if(cursorX + amount > contents[cursorY].size())
+            if(cursorX + amount > cursorXBound(cursorY))
                 throw "can not move cursor right";
             cursorX += amount;
             cursorXReset = -1; //sentinel

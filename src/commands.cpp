@@ -99,8 +99,14 @@ void insertModeInput(Buffer &b, char ch){
     switch(ch){
         case 8:
         case 127:
-            b.moveCursor(LEFT);
-            b.deleteAtCursor();
+            if(b.cursorX == 0){
+                b.moveCursor(UP);
+                b.moveCursor(END_OF_LINE);
+                b.joinLineAtCursor();
+            } else {
+                b.moveCursor(LEFT);
+                b.deleteAtCursor();
+            }
             break;
         case 27:
             b.mode = NORMAL;

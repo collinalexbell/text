@@ -33,6 +33,7 @@ struct Buffer{
     int findEndOfLine(int lineNo);
     void initContents(string raw);
     void insertAtCursor(char ch);
+    void joinLineAtCursor();
     string toString(int offset, int numRows);
     string toString();
     void resetXCursorToCacheIfNeeded();

@@ -43,9 +43,17 @@ Buffer::Buffer(char* fname){
 }
 
 void Buffer::deleteAtCursor(){
-    if(cursorY < contents.size() &&
-            cursorX < contents[cursorY].size()){
+    if(cursorY < contents.size() && cursorX < contents[cursorY].size()){
         contents[cursorY].erase(cursorX, 1);
+        contentsChangedB = true;
+    }
+}
+
+void Buffer::joinLineAtCursor(){
+    if(cursorY >= 0 && cursorY < contents.size()-2){
+        contents[cursorY].append(contents[cursorY+1]);
+        auto it = contents.begin() + cursorY + 1;
+        contents.erase(it);
         contentsChangedB = true;
     }
 }

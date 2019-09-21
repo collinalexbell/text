@@ -24,10 +24,11 @@ int Buffer::findBeginningOfLine(int lineNo){
 int Buffer::findEndOfLine(int lineNo){
     string line = contents[lineNo];
     smatch match;
-    regex r("\\S");
+    regex r(".*\\S");
     regex_search(line, match, r);
     if(match.empty()) return 0;
-    return match.position(match.size()-1);
+    int start = match.position();
+    return start + match[0].length();
 }
 
 Buffer::Buffer(string contents){
@@ -127,7 +128,7 @@ void Buffer::moveCursor(Direction d, int amount){
             break;
         case END_OF_LINE:
             cursorX = findEndOfLine(cursorY);
-            cursorXReset = -1;
+            cursorXReset = -1; //sentinel
             break;
         default:
             break;

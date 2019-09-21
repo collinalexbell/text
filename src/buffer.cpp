@@ -66,6 +66,13 @@ void Buffer::initContents(string raw){
     }
 }
 
+void Buffer::insertLineAfterCursor(){
+    string line = contents[cursorY].substr(cursorX);
+    contents[cursorY].erase(cursorX);
+    contents.insert(contents.begin()+cursorY+1, line);
+    contentsChangedB = true;
+}
+
 void Buffer::insertAtCursor(char ch){
     bool lineExists = cursorY < contents.size();
     //colExists uses <= because cursor could insert at end.

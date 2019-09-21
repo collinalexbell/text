@@ -60,6 +60,7 @@ void normalModeInput(Buffer &b, char ch, string state){
     try{
         if(state == "k") moveCursor(b, UP);
         if(state == "j") moveCursor(b, DOWN);
+        if(state == "J") b.joinLineAtCursor();
         if(state == "h") moveCursor(b, LEFT);
         if(state == "l") moveCursor(b, RIGHT);
         if(state == "G") moveCursor(b, b.contents.size()-1);
@@ -97,6 +98,7 @@ void normalModeInput(Buffer &b, char ch){
 void insertModeInput(Buffer &b, char ch){
     cursorLine();
     switch(ch){
+        //Backspace
         case 8:
         case 127:
             if(b.cursorX == 0){
@@ -108,10 +110,18 @@ void insertModeInput(Buffer &b, char ch){
                 b.deleteAtCursor();
             }
             break;
+        //Escape
         case 27:
             b.mode = NORMAL;
             if (b.cursorX > 0) b.moveCursor(LEFT);
             cursorBlock();
+            break;
+        //Enter
+        case 10:
+        case 13:
+            b.insertLineAfterCursor();
+            b.moveCursor(DOWN);
+            b.moveCursor(BEGINNING_OF_LINE);
             break;
         default:
             b.insertAtCursor(ch);

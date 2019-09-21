@@ -13,6 +13,7 @@ enum Direction {
     BEGINNING_OF_LINE, END_OF_LINE};
 
 struct Buffer{
+    string filename;
     int cursorXReset = 0;
     vector<string> contents;
     bool contentsChangedB = true;
@@ -42,6 +43,7 @@ struct Buffer{
     void moveXCursorToLineEndAndCacheIfNeeded();
     void moveCursor(Direction d, int amount=1);
     void moveCursor(int row);
+    void save();
 };
 
 #endif

@@ -36,6 +36,7 @@ Buffer::Buffer(string contents){
 }
 
 Buffer::Buffer(char* fname){
+    filename = fname;
     ifstream in(fname);
     string raw = string(std::istreambuf_iterator<char>(in),
             std::istreambuf_iterator<char>());
@@ -174,6 +175,19 @@ void Buffer::moveCursor(Direction d, int amount){
 void Buffer::moveCursor(int row){
     if(row >= 0 && row < contents.size()){
         cursorY = row;
+    }
+}
+
+void Buffer::save(){
+    if(filename.size() > 0){
+        ofstream out(filename);
+        for(int i = 0; i < contents.size(); i++){
+            string line = contents[i];
+            out.write(line.c_str(), line.size());
+            if(i<contents.size()-1){
+                out.write("\n", 1);
+            }
+        }
     }
 }
 

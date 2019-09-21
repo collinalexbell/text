@@ -10,7 +10,7 @@ void insertModeInput(Buffer &b, char ch);
 bool handle_commands(Buffer &b){
      char ch = getch();
      if(ch == ':'){
-         Command cmd = ex_command_mode();
+         Command cmd = ex_command_mode(b);
          if(cmd == QUIT){
              return true;
          }
@@ -22,7 +22,7 @@ bool handle_commands(Buffer &b){
      return false;
 }
 
-Command ex_command_mode(){ int row, col;
+Command ex_command_mode(Buffer &b){ int row, col;
     getmaxyx(stdscr, row, col);
     chtype last_line[col+1];
 
@@ -51,6 +51,13 @@ Command ex_command_mode(){ int row, col;
     refresh();
     if(cmd == "q"){
         return QUIT;
+    }
+    if(cmd == "wq"){
+        b.save();
+        return QUIT;
+    }
+    if(cmd == "w"){
+        b.save();
     }
     return UNKNOWN;
 }

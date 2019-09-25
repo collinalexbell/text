@@ -26,7 +26,7 @@ void Window::computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv){
     else
         i = rv.end = b.cursorY;
 
-    while(rowsRemaining > 0 && i>=0 && i<b.contents.size()){
+    while(rowsRemaining > 0 && i>0 && i<b.contents.size()){
         int n = b.contents[i].size();
         int rowsUsed = (n+width-1)/width;
         if (rowsUsed == 0) rowsUsed = 1;

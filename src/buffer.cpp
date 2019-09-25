@@ -65,6 +65,7 @@ void Buffer::initContents(string raw){
     while (getline(ss, lineBuffer)){
         contents.push_back(string(lineBuffer));
     }
+    if(contents.size() == 0) contents.push_back("");
 }
 
 void Buffer::insertLineAboveCursor(){

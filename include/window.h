@@ -5,10 +5,12 @@
 #include <ncurses.h>
 #include <stdio.h>
 
+using namespace std;
 
 struct BufferBlit {
     Buffer *buf = NULL;
-    int start, end, cursorX, cursorY;
+    int cursorX, cursorY;
+    vector<string>::iterator start, end;
     bool moveCursor, shouldBlit;
 };
 

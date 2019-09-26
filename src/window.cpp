@@ -3,6 +3,7 @@
 #include <ncurses.h>
 #include <stdio.h>
 #include <cmath>
+#include <iterator>
 
 int Window::computeScroll(Buffer &b){
     /* returns:
@@ -10,36 +11,53 @@ int Window::computeScroll(Buffer &b){
      *    -1 if scroll up or first render
      *    1  if scroll down
      */
-    if(b.cursorY < last.start)
+    vector<string>::iterator cursor;
+    cursor = b.contents.begin() + b.cursorY;
+    if(cursor < last.start)
         return -1;
-    if(b.cursorY > last.end)
+    if(cursor > last.end)
         return 1;
     return 0;
 }
 
-void Window::computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv){
+void scrollUp(Buffer &b, BufferBlit &rv, int width, int height){
     int rowsRemaining = height;
-    int i;
-    if(scroll < 0)
-        i = rv.start = b.cursorY;
-    else
-        i = rv.end = b.cursorY;
-
-    while(rowsRemaining > 0 && i>=0 && i<b.contents.size()){
-        int n = b.contents[i].size();
+    vector<string>::iterator it;
+    it = rv.start = b.contents.begin() + b.cursorY;
+    while(rowsRemaining > 0 && it != b.contents.end()){
+        int n = it->size();
         int rowsUsed = (n+width-1)/width;
         if (rowsUsed == 0) rowsUsed = 1;
         rowsRemaining -= rowsUsed;
         if(rowsRemaining > 0){
-            if(scroll < 0){
-                rv.end = i;
-                i++;
-            }else{
-                rv.start = i;
-                i--;
-            }
+                rv.end = it;
+                it++;
         }
     }
+}
+
+void scrollDown(Buffer &b, BufferBlit &rv, int width, int height){
+    int rowsRemaining = height;
+    vector<string>::reverse_iterator it;
+    rv.end = b.contents.begin() + b.cursorY;
+    it = vector<string>::reverse_iterator(rv.end);
+    while(rowsRemaining > 0 && it != b.contents.rend()){
+        int n = it->size();
+        int rowsUsed = (n+width-1)/width;
+        if (rowsUsed == 0) rowsUsed = 1;
+        rowsRemaining -= rowsUsed;
+        if(rowsRemaining > 0){
+            rv.start = it.base();
+            it++;
+        }
+    }
+}
+
+void Window::computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv){
+    if(scroll < 0)
+        scrollUp(b, rv, width, height);
+    else
+        scrollDown(b, rv, width, height);
 }
 
 BufferBlit Window::computeBlit(Buffer &b){
@@ -59,8 +77,10 @@ BufferBlit Window::computeBlit(Buffer &b){
 
     rv.cursorX = 0;
     rv.cursorY = 0;
-    for(int i = rv.start; i < b.cursorY; i++){
-        rv.cursorY += (b.contents[i].size() / width) + 1;
+    vector<string>::iterator it;
+    for(it = rv.start;
+            it < b.contents.begin() + b.cursorY; it++){
+        rv.cursorY += (it->size() / width) + 1;
     }
     rv.cursorX = b.cursorX % width;
     rv.cursorY += b.cursorX / width;
@@ -86,8 +106,9 @@ BufferBlit Window::computeBlit(Buffer &b){
 
 void Window::blit(BufferBlit b){
     clear();
-    for(int i = b.start; i <= b.end; i++){
-        addstr(b.buf->contents[i].c_str());
+    vector<string>::iterator it;
+    for(it = b.start; it <= b.end; it++){
+        addstr(it->c_str());
         addstr("\n");
     }
 }

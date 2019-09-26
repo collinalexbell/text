@@ -17,7 +17,6 @@ int Window::computeScroll(Buffer &b){
     return 0;
 }
 
-
 void Window::computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv){
     int rowsRemaining = height;
     int i;
@@ -26,24 +25,21 @@ void Window::computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv){
     else
         i = rv.end = b.cursorY;
 
-    while(rowsRemaining > 0 && i>0 && i<b.contents.size()){
+    while(rowsRemaining > 0 && i>=0 && i<b.contents.size()){
         int n = b.contents[i].size();
         int rowsUsed = (n+width-1)/width;
         if (rowsUsed == 0) rowsUsed = 1;
         rowsRemaining -= rowsUsed;
         if(rowsRemaining > 0){
-            if(scroll < 0)
+            if(scroll < 0){
+                rv.end = i;
                 i++;
-            else
+            }else{
+                rv.start = i;
                 i--;
+            }
         }
     }
-
-    if(scroll < 0)
-        rv.end = i;
-    else
-        rv.start = i;
-
 }
 
 BufferBlit Window::computeBlit(Buffer &b){

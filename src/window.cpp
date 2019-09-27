@@ -5,25 +5,33 @@
 #include <cmath>
 #include <iterator>
 
+bool Window::isInFrame(Buffer &b){
+    for(auto it = last.start; it!=last.end; it++){
+        if(it == b.cursorY)
+            return true;
+    }
+    return false;
+}
+
 int Window::computeScroll(Buffer &b){
     /* returns:
      *    0 if no scroll needed since last render,
      *    -1 if scroll up or first render
      *    1  if scroll down
      */
-    vector<string>::iterator cursor;
-    cursor = b.contents.begin() + b.cursorY;
-    if(cursor < last.start)
+    if(isInFrame(b))
+        return 0;
+    if(b.lastYMove == UP)
         return -1;
-    if(cursor > last.end)
+    if(b.lastYMove == DOWN)
         return 1;
     return 0;
 }
 
 void scrollUp(Buffer &b, BufferBlit &rv, int width, int height){
     int rowsRemaining = height;
-    vector<string>::iterator it;
-    it = rv.start = b.contents.begin() + b.cursorY;
+    list<string>::iterator it;
+    it = rv.start = b.cursorY;
     while(rowsRemaining > 0 && it != b.contents.end()){
         int n = it->size();
         int rowsUsed = (n+width-1)/width;
@@ -38,9 +46,9 @@ void scrollUp(Buffer &b, BufferBlit &rv, int width, int height){
 
 void scrollDown(Buffer &b, BufferBlit &rv, int width, int height){
     int rowsRemaining = height;
-    vector<string>::reverse_iterator it;
-    rv.end = b.contents.begin() + b.cursorY;
-    it = vector<string>::reverse_iterator(rv.end);
+    list<string>::reverse_iterator it;
+    rv.end = b.cursorY;
+    it = list<string>::reverse_iterator(rv.end);
     while(rowsRemaining > 0 && it != b.contents.rend()){
         int n = it->size();
         int rowsUsed = (n+width-1)/width;
@@ -77,9 +85,8 @@ BufferBlit Window::computeBlit(Buffer &b){
 
     rv.cursorX = 0;
     rv.cursorY = 0;
-    vector<string>::iterator it;
-    for(it = rv.start;
-            it < b.contents.begin() + b.cursorY; it++){
+    list<string>::iterator it;
+    for(it = rv.start; it != b.cursorY; it++){
         rv.cursorY += (it->size() / width) + 1;
     }
     rv.cursorX = b.cursorX % width;
@@ -106,11 +113,14 @@ BufferBlit Window::computeBlit(Buffer &b){
 
 void Window::blit(BufferBlit b){
     clear();
-    vector<string>::iterator it;
-    for(it = b.start; it <= b.end; it++){
+    list<string>::iterator end = b.end;
+    end++;
+    list<string>::iterator it = b.start;
+    do{
         addstr(it->c_str());
         addstr("\n");
-    }
+        it++;
+    } while(it != end);
 }
 
 void Window::moveCursor(BufferBlit b){

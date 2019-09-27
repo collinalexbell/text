@@ -67,6 +67,7 @@ void normalModeInput(Buffer &b, char ch, string state){
     try{
         if(state == "O"){
             b.insertLineAboveCursor();
+            b.moveCursor(UP);
             b.moveCursor(BEGINNING_OF_LINE);
             b.mode = INSERT;
             cursorLine();

@@ -4,13 +4,14 @@
 #include "buffer.h"
 #include <ncurses.h>
 #include <stdio.h>
+#include <list>
 
 using namespace std;
 
 struct BufferBlit {
     Buffer *buf = NULL;
     int cursorX, cursorY;
-    vector<string>::iterator start, end;
+    list<string>::iterator start, end;
     bool moveCursor, shouldBlit;
 };
 
@@ -29,6 +30,7 @@ struct Window {
     void computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv);
     BufferBlit computeBlit(Buffer &b);
     void display(Buffer &b);
+    bool isInFrame(Buffer &b);
     void moveCursor(BufferBlit b);
 };
 

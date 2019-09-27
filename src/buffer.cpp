@@ -12,8 +12,8 @@
 
 using namespace std;
 
-int Buffer::findBeginningOfLine(int lineNo){
-    string line = contents[lineNo];
+int Buffer::findBeginningOfLine(){
+    string line = *cursorY;
     smatch match;
     regex r("\\S");
     regex_search(line, match, r);
@@ -21,8 +21,8 @@ int Buffer::findBeginningOfLine(int lineNo){
     return match.position();
 }
 
-int Buffer::findEndOfLine(int lineNo){
-    string line = contents[lineNo];
+int Buffer::findEndOfLine(){
+    string line = *cursorY;
     smatch match;
     regex r(".*\\S");
     regex_search(line, match, r);
@@ -32,10 +32,12 @@ int Buffer::findEndOfLine(int lineNo){
 }
 
 Buffer::Buffer(string contents){
+    mode = NORMAL;
     initContents(contents);
 }
 
 Buffer::Buffer(char* fname){
+    mode = NORMAL;
     filename = fname;
     ifstream in(fname);
     string raw = string(std::istreambuf_iterator<char>(in),
@@ -44,16 +46,17 @@ Buffer::Buffer(char* fname){
 }
 
 void Buffer::deleteAtCursor(){
-    if(cursorY < contents.size() && cursorX < contents[cursorY].size()){
-        contents[cursorY].erase(cursorX, 1);
+    if(cursorY != contents.end() && cursorX < cursorY->size()){
+        cursorY->erase(cursorX, 1);
         contentsChangedB = true;
     }
 }
 
 void Buffer::joinLineAtCursor(){
-    if(cursorY >= 0 && cursorY < contents.size()-2){
-        contents[cursorY].append(contents[cursorY+1]);
-        auto it = contents.begin() + cursorY + 1;
+    if(distance(cursorY, contents.end())>1){
+        auto it = cursorY;
+        it++;
+        cursorY->append(*it);
         contents.erase(it);
         contentsChangedB = true;
     }
@@ -66,46 +69,31 @@ void Buffer::initContents(string raw){
         contents.push_back(string(lineBuffer));
     }
     if(contents.size() == 0) contents.push_back("");
+    cursorY = contents.begin();
 }
 
 void Buffer::insertLineAboveCursor(){
-    contents.insert(contents.begin()+cursorY, "");
+    contents.insert(cursorY, "");
     contentsChangedB = true;
 }
 
 void Buffer::insertLineAfterCursor(){
-    string line = contents[cursorY].substr(cursorX);
-    contents[cursorY].erase(cursorX);
-    contents.insert(contents.begin()+cursorY+1, line);
+    string line = cursorY->substr(cursorX);
+    cursorY->erase(cursorX);
+    auto it = cursorY;
+    it++;
+    contents.insert(it, line);
     contentsChangedB = true;
 }
 
 void Buffer::insertAtCursor(char ch){
-    bool lineExists = cursorY < contents.size();
+    bool lineExists = cursorY != contents.end();
     //colExists uses <= because cursor could insert at end.
-    bool colExists  = cursorX <= contents[cursorY].size();
+    bool colExists  = cursorX <= cursorY->size();
     if(lineExists && colExists){
-        contents[cursorY].insert(cursorX, 1, ch);
+        cursorY->insert(cursorX, 1, ch);
     }
     contentsChangedB = true;
-}
-
-string Buffer::toString(int offset, int numRows){
-    string rv = string();
-    if(numRows+offset > contents.size()){
-        numRows = contents.size()-offset;
-    }
-    for(int i=offset; i<numRows+offset; i++){
-        if(i>offset && i<contents.size()){
-            rv.append("\n");
-        }
-        rv.append(contents[i]);
-    }
-    return rv;
-}
-
-string Buffer::toString(){
-    return toString(0, contents.size());
 }
 
 void Buffer::resetXCursorToCacheIfNeeded(){
@@ -117,36 +105,62 @@ void Buffer::resetXCursorToCacheIfNeeded(){
 
 void Buffer::moveXCursorToLineEndAndCacheIfNeeded(){
     //move left if line not long enough
-    if(cursorX >= contents[cursorY].size()){
+    if(cursorX >= cursorY->size()){
         cursorXReset = cursorX;
-        cursorX = contents[cursorY].size()-1;
+        cursorX = cursorY->size()-1;
         if(cursorX < 0) cursorX = 0;
     }
 }
 
-int Buffer::cursorXBound(int lineNo){
-    int bound = contents[lineNo].size();
+int Buffer::cursorXBound(){
+    int bound = cursorY->size();
     if(mode == NORMAL)
         //Should be able to insert at line.size(), but not scroll to it.
         bound--;
     return bound;
 }
 
+Direction Buffer::orderRelativeToCursor(list<string>::iterator target){
+    if(cursorY == target) return NULLDIR;
+    Direction direction = UP;
+    for(auto it = contents.begin(); it != contents.end(); it++){
+        if(it == target){
+            return direction;
+        }
+        if(it == cursorY){
+            direction = DOWN;
+        }
+    }
+    return NULLDIR;
+}
+
 void Buffer::moveCursor(Direction d, int amount){
+    auto begin = contents.begin();
+    auto end = --contents.end();
     switch(d){
         case UP:
-            if(cursorY - amount < 0)
-                throw "can not move cursor up";
-            cursorY -= amount;
+            for(int i=0; i<amount; i++){
+                if(begin == cursorY)
+                    throw "can not move cursor up";
+                begin++;
+            }
+            for(int i=0; i<amount; i++)
+                cursorY--;
             resetXCursorToCacheIfNeeded();
             moveXCursorToLineEndAndCacheIfNeeded();
+            lastYMove = UP;
             break;
         case DOWN:
-            if(cursorY + amount >= contents.size())
-                throw "can not move cursor dwn";
-            cursorY += amount;
+            for(int i=0; i<amount; i++){
+                if(end == cursorY)
+                    throw "can not move cursor up";
+                end--;
+            }
+            for(int i=0; i<amount; i++)
+                cursorY++;
             resetXCursorToCacheIfNeeded();
             moveXCursorToLineEndAndCacheIfNeeded();
+            lastYMove = DOWN;
             break;
         case LEFT:
             if(cursorX - amount < 0)
@@ -155,17 +169,17 @@ void Buffer::moveCursor(Direction d, int amount){
             cursorXReset = -1; //sentinel
             break;
         case RIGHT:
-            if(cursorX + amount > cursorXBound(cursorY))
+            if(cursorX + amount > cursorXBound())
                 throw "can not move cursor right";
             cursorX += amount;
             cursorXReset = -1; //sentinel
             break;
         case BEGINNING_OF_LINE:
-            cursorX = findBeginningOfLine(cursorY);
+            cursorX = findBeginningOfLine();
             cursorXReset = -1; //sentinel
             break;
         case END_OF_LINE:
-            cursorX = findEndOfLine(cursorY);
+            cursorX = findEndOfLine();
             cursorXReset = -1; //sentinel
             break;
         default:
@@ -173,19 +187,28 @@ void Buffer::moveCursor(Direction d, int amount){
     }
 }
 
+
+
 void Buffer::moveCursor(int row){
     if(row >= 0 && row < contents.size()){
-        cursorY = row;
+        auto it = contents.begin();
+        for(int i=0; i<row; i++)
+            it++;
+        lastYMove = orderRelativeToCursor(it);
+        cursorY = it;
+
+        resetXCursorToCacheIfNeeded();
+        moveXCursorToLineEndAndCacheIfNeeded();
+        contentsChangedB = true;
     }
 }
 
 void Buffer::save(){
     if(filename.size() > 0){
         ofstream out(filename);
-        for(int i = 0; i < contents.size(); i++){
-            string line = contents[i];
-            out.write(line.c_str(), line.size());
-            if(i<contents.size()-1){
+        for(auto line = contents.begin(); line != contents.end(); line++){
+            out.write(line->c_str(), line->size());
+            if(line!=--contents.end()){
                 out.write("\n", 1);
             }
         }

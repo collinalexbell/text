@@ -9,7 +9,7 @@ all: $(SRC)/main.cpp window.o commands.o cursor.o buffer.o
 buffer.o: $(SRC)/buffer.cpp $(I)/buffer.h
 	$(G++) -g -c $(SRC)/buffer.cpp -I$(I)
 
-commands.o: $(SRC)/commands.cpp $(I)/commands.h
+commands.o: $(SRC)/commands.cpp $(I)/commands.h $(I)/buffer.h $(I)/cursor.h
 	$(G++) -g -c $(SRC)/commands.cpp -I$(I)
 
 cursor.o: $(SRC)/cursor.cpp $(I)/cursor.h

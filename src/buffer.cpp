@@ -7,7 +7,6 @@
 #include <regex>
 #include <sstream>      // std::stringstream
 
-
 #include "buffer.h"
 
 using namespace std;
@@ -186,8 +185,6 @@ void Buffer::moveCursor(Direction d, int amount){
             break;
     }
 }
-
-
 
 void Buffer::moveCursor(int row){
     if(row >= 0 && row < contents.size()){

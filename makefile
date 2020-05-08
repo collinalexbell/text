@@ -1,6 +1,7 @@
 SRC = src
 I = include
 G++ = g++ -std=c++11
+PWD := $(shell pwd)
 
 
 all: $(SRC)/main.cpp window.o commands.o cursor.o buffer.o
@@ -25,6 +26,9 @@ test: test.o $(SRC)/bufferTest.cpp buffer.o
 	$(G++) -g -c $(SRC)/bufferTest.cpp -I$(I)
 	$(G++) test.o bufferTest.o buffer.o -o test
 	./test
+
+install: text
+	ln -s $(PWD)/text /home/$(USER)/.bin/text 
 
 clean:
 	rm *.o

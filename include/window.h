@@ -5,6 +5,7 @@
 #include <ncurses.h>
 #include <stdio.h>
 #include <list>
+#include <string>
 
 using namespace std;
 

@@ -1,7 +1,10 @@
 #include "buffer.h"
 #include "commands.h"
 #include "cursor.h"
+#include "interface.h"
 #include <ncurses.h>
+#include <stdio.h>
+#include <string>
 
 using namespace std;
 bool normalModeInput(Buffer &b, char ch);
@@ -21,7 +24,7 @@ bool handle_commands(Buffer &b){
      return false;
 }
 
-Command ex_command_mode(Buffer &b){ int row, col;
+Command ex_command_mode(Buffer &b, Interface *interface){ int row, col;
     getmaxyx(stdscr, row, col);
     chtype last_line[col+1];
 
@@ -38,7 +41,7 @@ Command ex_command_mode(Buffer &b){ int row, col;
     char c;
 
     while(cmd_i<20 && c != 10){
-        c = getch();
+        c = interface->getChar();
         addch(c);
         refresh();
         if(c != 10) cmd+=c;
@@ -58,6 +61,7 @@ Command ex_command_mode(Buffer &b){ int row, col;
     if(cmd == "w"){
         b.save();
     }
+    printf("the cmd is: %s.", cmd);
     return UNKNOWN;
 }
 
@@ -107,7 +111,9 @@ bool normalModeInput(Buffer &b, char ch, string state){
         if(state == "g") normalModeInput(b, getch(), state);
         if(state == "gg") moveCursor(b, 0);
         if(state == ":"){
-          Command cmd = ex_command_mode(b);
+          Interface *interface = new NcursesInterface();
+          Command cmd = ex_command_mode(b, interface);
+          delete interface;
           if(cmd == QUIT){
             return true;
           }

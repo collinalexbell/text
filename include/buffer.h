@@ -13,17 +13,19 @@ enum Direction {
     BEGINNING_OF_LINE, END_OF_LINE,
     NULLDIR};
 
-struct Buffer{
+class Buffer{
+
+  public:
     string filename;
-    int cursorXReset = 0;
-    list<string> contents;
     bool contentsChangedB = true;
+    int cursorXReset = 0;
     bool contentsChanged(){
         bool rv = contentsChangedB;
         contentsChangedB = false;
         return rv;
     };
     int cursorX = 0;
+    list<string> contents;
     list<string>::iterator cursorY;
     Direction lastYMove = UP;
     BufferMode mode = NORMAL;
@@ -44,7 +46,7 @@ struct Buffer{
     void moveXCursorToLineEndAndCacheIfNeeded();
     void moveCursor(Direction d, int amount=1);
     void moveCursor(int row);
-    void save();
+    virtual void save();
 };
 
 #endif

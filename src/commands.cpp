@@ -4,19 +4,18 @@
 #include <ncurses.h>
 
 using namespace std;
-void normalModeInput(Buffer &b, char ch);
+bool normalModeInput(Buffer &b, char ch);
 void insertModeInput(Buffer &b, char ch);
 
 bool handle_commands(Buffer &b){
      char ch = getch();
-     if(ch == ':'){
-         Command cmd = ex_command_mode(b);
-         if(cmd == QUIT){
-             return true;
-         }
-     }
 
-     if(b.mode == NORMAL) normalModeInput(b, ch);
+     if(b.mode == NORMAL) {
+       bool quit = normalModeInput(b, ch);
+       if(quit) {
+         return true;
+       }
+     }
      else if(b.mode == INSERT) insertModeInput(b, ch);
 
      return false;
@@ -62,7 +61,7 @@ Command ex_command_mode(Buffer &b){ int row, col;
     return UNKNOWN;
 }
 
-void normalModeInput(Buffer &b, char ch, string state){
+bool normalModeInput(Buffer &b, char ch, string state){
     state += ch;
     try{
         if(state == "O"){
@@ -107,13 +106,20 @@ void normalModeInput(Buffer &b, char ch, string state){
         }
         if(state == "g") normalModeInput(b, getch(), state);
         if(state == "gg") moveCursor(b, 0);
+        if(state == ":"){
+          Command cmd = ex_command_mode(b);
+          if(cmd == QUIT){
+            return true;
+          }
+        }
     } catch(const char* e){
         beep();
     }
+    return false;
 }
 
-void normalModeInput(Buffer &b, char ch){
-    normalModeInput(b, ch, "");
+bool normalModeInput(Buffer &b, char ch){
+    return normalModeInput(b, ch, "");
 }
 
 void insertModeInput(Buffer &b, char ch){

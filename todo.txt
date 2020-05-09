@@ -1,0 +1,8 @@
+write tests for command.cpp
+refactor command.cpp
+
+write tests for cursor.cpp
+refactor cursor.cpp
+
+write tests for window.cpp
+refactor window.cpp

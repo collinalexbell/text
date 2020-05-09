@@ -6,3 +6,5 @@ refactor cursor.cpp
 
 write tests for window.cpp
 refactor window.cpp
+
+move tests into a tests folder in project root

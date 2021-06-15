@@ -110,6 +110,8 @@ bool normalModeInput(Buffer &b, char ch, string state){
         }
         if(state == "g") normalModeInput(b, getch(), state);
         if(state == "gg") moveCursor(b, 0);
+	if(state == "d") normalModeInput(b, getch(), state);
+        if(state == "dd") b.deleteLine();          
         if(state == ":"){
           Interface *interface = new NcursesInterface();
           Command cmd = ex_command_mode(b, interface);

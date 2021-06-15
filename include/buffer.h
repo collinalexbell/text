@@ -34,6 +34,7 @@ class Buffer{
     Buffer(char* fname);
     int cursorXBound();
     void deleteAtCursor();
+    void deleteLine();
     int findBeginningOfLine();
     int findEndOfLine();
     void initContents(string raw);

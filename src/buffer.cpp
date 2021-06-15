@@ -51,6 +51,12 @@ void Buffer::deleteAtCursor(){
     }
 }
 
+void Buffer::deleteLine(){
+    cursorY = contents.erase(cursorY);
+    std::cout << "deleting line";
+    contentsChangedB = true;
+}
+
 void Buffer::joinLineAtCursor(){
     if(distance(cursorY, contents.end())>1){
         auto it = cursorY;
@@ -211,4 +217,3 @@ void Buffer::save(){
         }
     }
 }
-

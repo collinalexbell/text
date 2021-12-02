@@ -17,7 +17,7 @@ TEST_CASE("findBeginningOfLine() ", "[buffer]") {
   b.moveCursor(RIGHT);
   b.moveCursor(RIGHT);
   REQUIRE_NOTHROW(
-      [&b](){if(b.cursorX != 4 && *b.cursorY == "  bar"){throw "fail";}}()
+      [&b](){if(b.cursorX != 4 && *b.cursorY == "  bar"){throw "givens fail to hold";}}()
   );
   beginning = b.findBeginningOfLine();
   // 'b' of bar. think of it as "I" command in vim

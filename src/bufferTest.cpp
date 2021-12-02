@@ -24,6 +24,26 @@ TEST_CASE("findBeginningOfLine() ", "[buffer]") {
   REQUIRE(beginning == 2);
 }
 
+/*
+ *  int Buffer::findEndOfLine(){
+    string line = *cursorY;
+    smatch match;
+    regex r(".*\\S");
+    regex_search(line, match, r);
+    if(match.empty()) return 0;
+    int start = match.position();
+    return start + match[0].length();
+}
+ */
+
+TEST_CASE("findEndOfLine() ", "[buffer]") {
+  string contents = "foo\n";
+  Buffer b(contents);
+
+  int end = b.findEndOfLine();
+  REQUIRE(end == 3); 
+}
+
 
 TEST_CASE("moveCursor(UP) doesn't allow movement out of contents bounds",
         "[buffer]"){

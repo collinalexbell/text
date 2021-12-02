@@ -1,19 +1,8 @@
 #include "buffer.h"
 #include "catch.hpp"
 
-/*
- int Buffer::findBeginningOfLine(){
-    string line = *cursorY;
-    smatch match;
-    regex r("\\S");
-    regex_search(line, match, r);
-    if(match.empty()) return 0;
-    return match.position();
-}
- */
-
 TEST_CASE("findBeginningOfLine() ", "[buffer]") {
-  string contents = "foo\nbar\nbaz\n";
+  string contents = "foo\n  bar\nbaz\n";
   Buffer b(contents);
 
   b.moveCursor(RIGHT);
@@ -21,8 +10,20 @@ TEST_CASE("findBeginningOfLine() ", "[buffer]") {
   REQUIRE_NOTHROW(
       [&b](){if(b.cursorX != 2){throw "fail";}}()
   );
-  b.findBeginningOfLine();
+  int beginning = b.findBeginningOfLine();
+  REQUIRE(beginning == 0); 
+
+  b.moveCursor(DOWN);
+  b.moveCursor(RIGHT);
+  b.moveCursor(RIGHT);
+  REQUIRE_NOTHROW(
+      [&b](){if(b.cursorX != 4 && *b.cursorY == "  bar"){throw "fail";}}()
+  );
+  beginning = b.findBeginningOfLine();
+  // 'b' of bar. think of it as "I" command in vim
+  REQUIRE(beginning == 2);
 }
+
 
 TEST_CASE("moveCursor(UP) doesn't allow movement out of contents bounds",
         "[buffer]"){

@@ -35,7 +35,16 @@ class Buffer{
     int cursorXBound();
     void deleteAtCursor();
     void deleteLine();
+
+
+    //--------------------
     int findBeginningOfLine();
+    /* returns the x-index
+     * that is the index of
+     * the 1st non-whitespace
+     * character in the line
+     */
+    //--------------------
 
 
     //--------------------

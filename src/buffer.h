@@ -36,7 +36,17 @@ class Buffer{
     void deleteAtCursor();
     void deleteLine();
     int findBeginningOfLine();
+
+
+    //--------------------
     int findEndOfLine();
+    /* returns the x-index 
+     * that is 1+index of 
+     * the last character
+     */
+    //--------------------
+
+
     void initContents(string raw);
     void insertAtCursor(char ch);
     void insertLineAboveCursor();

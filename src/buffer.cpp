@@ -11,8 +11,6 @@
 
 using namespace std;
 
-foobarbaz;
-
 int Buffer::findBeginningOfLine(){
     string line = *cursorY;
     smatch match;

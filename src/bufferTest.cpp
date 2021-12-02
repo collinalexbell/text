@@ -1,6 +1,29 @@
 #include "buffer.h"
 #include "catch.hpp"
 
+/*
+ int Buffer::findBeginningOfLine(){
+    string line = *cursorY;
+    smatch match;
+    regex r("\\S");
+    regex_search(line, match, r);
+    if(match.empty()) return 0;
+    return match.position();
+}
+ */
+
+TEST_CASE("findBeginningOfLine() ", "[buffer]") {
+  string contents = "foo\nbar\nbaz\n";
+  Buffer b(contents);
+
+  b.moveCursor(RIGHT);
+  b.moveCursor(RIGHT);
+  REQUIRE_NOTHROW(
+      [&b](){if(b.cursorX != 2){throw "fail";}}()
+  );
+  b.findBeginningOfLine();
+}
+
 TEST_CASE("moveCursor(UP) doesn't allow movement out of contents bounds",
         "[buffer]"){
     string contents = "foo bar\nbaz bin\n\n";

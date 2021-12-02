@@ -1,0 +1,1 @@
+#1) When the line is so long that it linewraps, the inserts after it are broken (because the ncurses line increments while the logical line doesn't )

@@ -43,6 +43,8 @@ class Buffer{
      * that is the index of
      * the 1st non-whitespace
      * character in the line
+     *
+     * eg. Vim's 'I' keybind
      */
     //--------------------
 
@@ -52,6 +54,8 @@ class Buffer{
     /* returns the x-index 
      * that is 1+index of 
      * the last character
+     *
+     * eg. Vim's 'A' keybind
      */
     //--------------------
 

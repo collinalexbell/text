@@ -32,6 +32,27 @@ TEST_CASE("findEndOfLine() ", "[buffer]") {
   REQUIRE(end == 3); 
 }
 
+/*
+ *void Buffer::deleteAtCursor(){
+    if(cursorY != contents.end() && cursorX < cursorY->size()){
+        cursorY->erase(cursorX, 1);
+        contentsChangedB = true;
+    }
+}
+*/
+TEST_CASE("deleteAtCursor() ", "[buffer]") {
+  string contents = "foo\n";
+  Buffer b(contents);
+
+  b.moveCursor(RIGHT);
+  REQUIRE_NOTHROW(
+      [&b](){if(b.cursorX != 1){throw "givens fail to hold";}}()
+  );
+  b.deleteAtCursor();
+  REQUIRE(b.cursorY->compare("fo") == 0);
+  REQUIRE(b.contentsChanged()); 
+}
+
 
 TEST_CASE("moveCursor(UP) doesn't allow movement out of contents bounds",
         "[buffer]"){

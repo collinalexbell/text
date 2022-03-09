@@ -8,3 +8,21 @@ write tests for window.cpp
 refactor window.cpp
 
 move tests into a tests folder in project root
+
+"f"
+
+prevent quit when changes
+
+when line wrapping, if there isn't a new line to wrap to, it gets stuck
+
+it doesn't handle broken ":" commands like ":asdf"
+
+"dd" keeps the cursor in the same spot
+
+pressing <enter> in insert mode at the end of the buffer breaks whereas "o" in normal mode doesn't
+
+mouse scrolling doesn't work
+
+"x"
+
+after ":" cmd, buffer needs to go back to correct location

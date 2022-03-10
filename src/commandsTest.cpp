@@ -12,14 +12,17 @@ using namespace std;
 
 class MockBuffer: public Buffer {
   public:
-    MockBuffer(char* empty = "readme"): Buffer(empty){}
+    MockBuffer(char* empty = "readme\n"): Buffer(empty){}
     void save() override {}
 };
 
 class TestingInterface: public Interface {
   char *in;
   public:
-    TestingInterface(char *in): in(in) {}
+    int y, x;
+    TestingInterface(char *in): in(in) {
+      this->y = -1;
+    }
     char getChar() {
       if(*in != '\0'){
         char rv = *in;
@@ -28,6 +31,24 @@ class TestingInterface: public Interface {
       } else {
         return 0;
       }
+    }
+    int move(int y, int x) {
+      printf("in move\n");
+      this->y = y;
+      this->x = x;
+    }
+    void moveAndWriteString (int y, int x, char* str) {
+      this->y = y;
+      this->x = x;
+    }
+    void moveAndReadString (int y, int x, char* str) {
+      this->y = y;
+      this->x = x;
+    }
+
+    void getCursorPosition (int &y, int &x) {
+      y = this->y;
+      x = this->x;
     }
 };
 
@@ -43,3 +64,14 @@ TEST_CASE("ex_command_mode quit", "[command]"){
   delete b;
 }
 
+TEST_CASE("command moves cursor of interface back to buffer cursor when on second line"){
+  Buffer *b = new MockBuffer("readme\nreadme\nreadme\n");
+  char *in = (char*)malloc(2);
+  strcpy(in, "1\n");
+  TestingInterface *interface = new TestingInterface(in);
+  interface->move(1,0);
+
+  Command cmd = ex_command_mode(*b, interface);
+  REQUIRE(interface->y == 1);
+  delete b;
+}

@@ -158,7 +158,7 @@ void Buffer::moveCursor(Direction d, int amount){
         case DOWN:
             for(int i=0; i<amount; i++){
                 if(end == cursorY)
-                    throw "can not move cursor up";
+                    throw "can not move cursor down";
                 end--;
             }
             for(int i=0; i<amount; i++)

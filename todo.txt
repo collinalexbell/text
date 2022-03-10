@@ -1,3 +1,5 @@
+DONE 2022-03-09: after ":" cmd, buffer needs to go back to correct location
+
 write tests for command.cpp
 refactor command.cpp
 
@@ -25,4 +27,3 @@ mouse scrolling doesn't work
 
 "x"
 
-after ":" cmd, buffer needs to go back to correct location

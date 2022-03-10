@@ -24,15 +24,22 @@ bool handle_commands(Buffer &b){
      return false;
 }
 
-Command ex_command_mode(Buffer &b, Interface *interface){ int row, col;
+Command ex_command_mode(Buffer &b, Interface *interface){ 
+    int row, col;
+    int savedY, savedX;
     getmaxyx(stdscr, row, col);
-    chtype last_line[col+1];
+    interface->getCursorPosition(savedY, savedX);
+    char last_line[col+1];
+    for(int i=0; i<col; i++){
+      last_line[i]=' ';
+    }
+    last_line[col+1] = '\0';
 
     row = row-1;
-    mvinchstr(row, 0, last_line);
+    interface->moveAndReadString(row, 0, last_line);
     clrtoeol();
 
-    mvaddch(row, 0, ':');
+    interface->moveAndWriteString(row, 0, ":");
     refresh();
 
     string cmd;
@@ -49,8 +56,14 @@ Command ex_command_mode(Buffer &b, Interface *interface){ int row, col;
 
     }
 
-    mvaddchstr(row, 0, last_line);
+    interface->moveAndWriteString(row, 0, last_line);
     refresh();
+    interface->move(savedY, savedX);
+    try{
+      refresh();
+    }catch (const std::exception& e){
+      printf("%s", e.what());
+    }
     if(cmd == "q"){
         return QUIT;
     }
@@ -61,7 +74,6 @@ Command ex_command_mode(Buffer &b, Interface *interface){ int row, col;
     if(cmd == "w"){
         b.save();
     }
-    printf("the cmd is: %s.", cmd);
     return UNKNOWN;
 }
 

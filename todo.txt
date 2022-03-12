@@ -27,3 +27,7 @@ pressing <enter> in insert mode at the end of the buffer breaks whereas "o" in n
 mouse scrolling doesn't work
 
 encapsulate commands and the gui interface they use in a class
+
+undo
+
+camelCase -> snake_case (maybe use a java script)

@@ -99,3 +99,11 @@ TEST_CASE("moveCursor(RIGHT) doesn't allow movement out of contents bounds",
     REQUIRE_THROWS(b.moveCursor(RIGHT));
 }
 
+TEST_CASE("find_character_forward()") {
+  string contents = "asdf";
+  Buffer b(contents);
+  b.moveCursor(RIGHT);
+  b.find_character_forward('d');
+  REQUIRE(b.cursorX == 2);
+}
+

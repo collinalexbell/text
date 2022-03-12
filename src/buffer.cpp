@@ -30,6 +30,13 @@ int Buffer::findEndOfLine(){
     return start + match[0].length();
 }
 
+void Buffer::find_character_forward(char c){
+  int pos = cursorY->find(c, cursorX); 
+  if(pos >= 0) {
+    cursorX = pos;
+  }
+}
+
 Buffer::Buffer(string contents){
     mode = NORMAL;
     initContents(contents);

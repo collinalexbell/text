@@ -36,6 +36,8 @@ class Buffer{
     void deleteAtCursor();
     void deleteLine();
 
+    void find_character_forward(char c);
+
 
     //--------------------
     int findBeginningOfLine();

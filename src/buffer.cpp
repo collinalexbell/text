@@ -51,7 +51,9 @@ Buffer::Buffer(char* fname){
     initContents(raw);
 }
 
-void Buffer::deleteAtCursor(){
+void Buffer::delete_at_cursor(){
+    copy_buffer.contents = string(1, (*cursorY)[cursorX]);
+    copy_buffer.isLine = false;
     if(cursorY != contents.end() && cursorX < cursorY->size()){
         cursorY->erase(cursorX, 1);
         contentsChangedB = true;
@@ -59,7 +61,8 @@ void Buffer::deleteAtCursor(){
 }
 
 void Buffer::delete_line(){
-  copy_buffer = *cursorY;
+  copy_buffer.contents = *cursorY;
+  copy_buffer.isLine = true;
   cursorY = contents.erase(cursorY);
   contentsChangedB = true;
 }
@@ -227,6 +230,11 @@ void Buffer::save(){
 }
 
 void Buffer::paste_after(){
-  cout << "copy buffer:" << copy_buffer << endl;
-  contents.insert(++cursorY, copy_buffer);
+  if(copy_buffer.isLine) {
+    auto it = cursorY;
+    contents.insert(++it, copy_buffer.contents);
+    cursorY++;
+  } else {
+    cursorY->insert(++cursorX, copy_buffer.contents);
+  }
 }

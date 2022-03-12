@@ -121,7 +121,7 @@ bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
             cursorLine();
         }
         if(state == "x") {
-          b.deleteAtCursor();
+          b.delete_at_cursor();
         }
         if(state == "f") normalModeInput(b, interface->getChar(), state);
         if(state[0] == 'f' && state.length() > 1) b.find_character_forward(state[1]);
@@ -157,7 +157,7 @@ void InputProcessor::insertModeInput(Buffer &b, char ch){
                 b.joinLineAtCursor();
             } else {
                 b.moveCursor(LEFT);
-                b.deleteAtCursor();
+                b.delete_at_cursor();
             }
             break;
         //Escape

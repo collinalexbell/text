@@ -33,14 +33,14 @@ TEST_CASE("findEndOfLine() ", "[buffer]") {
 }
 
 /*
- *void Buffer::deleteAtCursor(){
+ *void Buffer::delete_at_cursor(){
     if(cursorY != contents.end() && cursorX < cursorY->size()){
         cursorY->erase(cursorX, 1);
         contentsChangedB = true;
     }
 }
 */
-TEST_CASE("deleteAtCursor() ", "[buffer]") {
+TEST_CASE("delete_at_cursor() ", "[buffer]") {
   string contents = "foo\n";
   Buffer b(contents);
 
@@ -48,7 +48,7 @@ TEST_CASE("deleteAtCursor() ", "[buffer]") {
   REQUIRE_NOTHROW(
       [&b](){if(b.cursorX != 1){throw "givens fail to hold";}}()
   );
-  b.deleteAtCursor();
+  b.delete_at_cursor();
   REQUIRE(b.cursorY->compare("fo") == 0);
   REQUIRE(b.contentsChanged()); 
 }
@@ -114,8 +114,18 @@ TEST_CASE("paste()") {
     b.delete_line();
     b.paste_after();
 
+    REQUIRE(*b.cursorY == string("asdf"));
     REQUIRE(b.contents.front() == string("qwerty"));
     b.contents.pop_front();
     REQUIRE(b.contents.front() == string("asdf")); 
+  }
+  SECTION("paste_after() following a delete_at_cursor()"){
+    string contents = "asdf\n";
+    Buffer b(contents);
+    b.delete_at_cursor();
+    b.paste_after();
+
+    REQUIRE(b.contents.front() == string("sadf")); 
+    REQUIRE(b.cursorX == 1);
   }
 }

@@ -237,4 +237,5 @@ void Buffer::paste_after(){
   } else {
     cursorY->insert(++cursorX, copy_buffer.contents);
   }
+  contentsChangedB = true;
 }

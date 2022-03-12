@@ -94,13 +94,15 @@ TEST_CASE("'x' should delete the character the cursor is on") {
   REQUIRE(new_contents.compare(string("adf")) == 0);
 }
 
-Buffer make_buffer_and_handle_commands(string bufferContents, const char* inputs) {
+Buffer make_buffer_and_handle_commands(string bufferContents, const char* inputs, int num_commands = 1) {
   Buffer b = Buffer(bufferContents);
-  char *in = (char*)malloc(2);
+  char *in = (char*)malloc(100);
   strcpy(in, inputs);
   TestingInterface *interface = new TestingInterface(in);
   InputProcessor inputProcessor(interface);
-  inputProcessor.handle_commands(b);
+  for(int i=0; i<num_commands; i++){
+    inputProcessor.handle_commands(b);
+  }
   return b;
 }
 
@@ -113,5 +115,23 @@ TEST_CASE("'f' should find matching next character in line"){
   SECTION("character doesn't exist"){
     Buffer b = make_buffer_and_handle_commands(contents, "fg");
     REQUIRE(b.cursorX == 0);
+  }
+}
+
+TEST_CASE("'p' should paste"){
+  SECTION("paste after 'dd'"){
+    string contents = "asdf\nqwerty\n";
+    Buffer b = make_buffer_and_handle_commands(contents, "ddp", 2);
+    REQUIRE(*b.cursorY == string("asdf"));
+    REQUIRE(b.contents.front() == string("qwerty"));
+    b.contents.pop_front();
+    REQUIRE(b.contents.front() == string("asdf"));
+
+  }
+  SECTION("paste after 'x'"){
+    string contents = "asdf\n";
+    Buffer b = make_buffer_and_handle_commands(contents, "xp", 2);
+    REQUIRE(b.contents.front() == string("sadf"));
+    REQUIRE(b.cursorX == 1);
   }
 }

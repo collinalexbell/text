@@ -12,7 +12,7 @@ using namespace std;
 
 class MockBuffer: public Buffer {
   public:
-    MockBuffer(char* empty = "readme\n"): Buffer(empty){}
+    MockBuffer(string empty = "readme\n"): Buffer(empty){}
     void save() override {}
 };
 
@@ -33,7 +33,6 @@ class TestingInterface: public Interface {
       }
     }
     int move(int y, int x) {
-      printf("in move\n");
       this->y = y;
       this->x = x;
     }
@@ -74,4 +73,17 @@ TEST_CASE("command moves cursor of interface back to buffer cursor when on secon
   Command cmd = ex_command_mode(*b, interface);
   REQUIRE(interface->y == 1);
   delete b;
+}
+
+TEST_CASE("'x' should delete the character the cursor is on") {
+  string contents = "asdf\n";
+  Buffer b = Buffer(contents);
+
+  // look in commands.cpp to understand what I need here
+  normalModeInput(b, 'l', "");
+  normalModeInput(b, 'x', "");
+
+  // look in buffer.h to understand what I need here
+  string new_contents = b.contents.front();
+  REQUIRE(new_contents.compare(string("adf")) == 0);
 }

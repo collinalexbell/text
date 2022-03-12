@@ -75,6 +75,7 @@ void Buffer::initContents(string raw){
     }
     if(contents.size() == 0) contents.push_back("");
     cursorY = contents.begin();
+
 }
 
 void Buffer::insertLineAboveCursor(){

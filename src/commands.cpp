@@ -120,6 +120,9 @@ bool normalModeInput(Buffer &b, char ch, string state){
             b.moveCursor(END_OF_LINE);
             cursorLine();
         }
+        if(state == "x") {
+          b.deleteAtCursor();
+        }
         if(state == "g") normalModeInput(b, getch(), state);
         if(state == "gg") moveCursor(b, 0);
 	if(state == "d") normalModeInput(b, getch(), state);

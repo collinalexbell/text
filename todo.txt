@@ -1,3 +1,4 @@
+DONE 2022-03-12 05:42:20: "x"
 DONE 2022-03-09: after ":" cmd, buffer needs to go back to correct location
 
 write tests for command.cpp
@@ -25,5 +26,4 @@ pressing <enter> in insert mode at the end of the buffer breaks whereas "o" in n
 
 mouse scrolling doesn't work
 
-"x"
-
+encapsulate commands and the gui interface they use in a class

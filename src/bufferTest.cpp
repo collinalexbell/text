@@ -107,3 +107,15 @@ TEST_CASE("find_character_forward()") {
   REQUIRE(b.cursorX == 2);
 }
 
+TEST_CASE("paste()") {
+  SECTION("paste_after() following a delete_line()"){
+    string contents = "asdf\nqwerty\n";
+    Buffer b(contents);
+    b.delete_line();
+    b.paste_after();
+
+    REQUIRE(b.contents.front() == string("qwerty"));
+    b.contents.pop_front();
+    REQUIRE(b.contents.front() == string("asdf")); 
+  }
+}

@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 enum BufferMode {INSERT, NORMAL, COMMAND};
 enum Direction {
     UP, DOWN, LEFT, RIGHT,
@@ -27,6 +26,7 @@ class Buffer{
     int cursorX = 0;
     list<string> contents;
     list<string>::iterator cursorY;
+    string copy_buffer;
     Direction lastYMove = UP;
     BufferMode mode = NORMAL;
 
@@ -34,7 +34,8 @@ class Buffer{
     Buffer(char* fname);
     int cursorXBound();
     void deleteAtCursor();
-    void deleteLine();
+    void delete_line();
+    void paste_after();
 
     void find_character_forward(char c);
 

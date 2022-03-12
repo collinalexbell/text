@@ -58,10 +58,10 @@ void Buffer::deleteAtCursor(){
     }
 }
 
-void Buffer::deleteLine(){
-    cursorY = contents.erase(cursorY);
-    std::cout << "deleting line";
-    contentsChangedB = true;
+void Buffer::delete_line(){
+  copy_buffer = *cursorY;
+  cursorY = contents.erase(cursorY);
+  contentsChangedB = true;
 }
 
 void Buffer::joinLineAtCursor(){
@@ -224,4 +224,9 @@ void Buffer::save(){
             }
         }
     }
+}
+
+void Buffer::paste_after(){
+  cout << "copy buffer:" << copy_buffer << endl;
+  contents.insert(++cursorY, copy_buffer);
 }

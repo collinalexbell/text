@@ -11,7 +11,7 @@ using namespace std;
 InputProcessor::InputProcessor(Interface* interface) : interface{interface} {}
 
 bool InputProcessor::handle_commands(Buffer &b){
-     char ch = getch();
+     char ch = interface->getChar();
 
      if(b.mode == NORMAL) {
        bool quit = normalModeInput(b, ch);
@@ -123,9 +123,11 @@ bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
         if(state == "x") {
           b.deleteAtCursor();
         }
-        if(state == "g") normalModeInput(b, getch(), state);
+        if(state == "f") normalModeInput(b, interface->getChar(), state);
+        if(state[0] == 'f' && state != "f") b.find_character_forward(state[1]);
+        if(state == "g") normalModeInput(b, interface->getChar(), state);
         if(state == "gg") moveCursor(b, 0);
-	if(state == "d") normalModeInput(b, getch(), state);
+	if(state == "d") normalModeInput(b, interface->getChar(), state);
         if(state == "dd") b.deleteLine();          
         if(state == ":"){
           Command cmd = ex_command_mode(b);

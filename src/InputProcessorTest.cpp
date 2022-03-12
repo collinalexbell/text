@@ -93,3 +93,15 @@ TEST_CASE("'x' should delete the character the cursor is on") {
   string new_contents = b.contents.front();
   REQUIRE(new_contents.compare(string("adf")) == 0);
 }
+
+TEST_CASE("'f' should find matching next character in line"){
+  string contents = "asdf\n";
+  Buffer b = Buffer(contents);
+
+  char *in = (char*)malloc(2);
+  strcpy(in, "fd");
+  TestingInterface *interface = new TestingInterface(in);
+  InputProcessor inputProcessor(interface);
+  inputProcessor.handle_commands(b);
+  REQUIRE(b.cursorX == 2);
+}

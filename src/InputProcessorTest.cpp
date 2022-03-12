@@ -1,4 +1,4 @@
-#include "commands.h"
+#include "InputProcessor.h"
 #include "catch.hpp"
 #include "buffer.h"
 #include "interface.h"
@@ -57,8 +57,9 @@ TEST_CASE("ex_command_mode quit", "[command]"){
   char *in = (char*)malloc(3);
   strcpy(in, "q\n");
   Interface *interface = new TestingInterface(in);
+  InputProcessor inputProcessor(interface);
 
-  Command cmd = ex_command_mode(*b, interface);
+  Command cmd = inputProcessor.ex_command_mode(*b);
   REQUIRE(cmd == QUIT);
   delete b;
 }
@@ -68,9 +69,10 @@ TEST_CASE("command moves cursor of interface back to buffer cursor when on secon
   char *in = (char*)malloc(2);
   strcpy(in, "1\n");
   TestingInterface *interface = new TestingInterface(in);
+  InputProcessor inputProcessor(interface);
   interface->move(1,0);
 
-  Command cmd = ex_command_mode(*b, interface);
+  Command cmd = inputProcessor.ex_command_mode(*b);
   REQUIRE(interface->y == 1);
   delete b;
 }
@@ -79,9 +81,13 @@ TEST_CASE("'x' should delete the character the cursor is on") {
   string contents = "asdf\n";
   Buffer b = Buffer(contents);
 
-  // look in commands.cpp to understand what I need here
-  normalModeInput(b, 'l', "");
-  normalModeInput(b, 'x', "");
+  char *in = (char*)malloc(1);
+  TestingInterface *interface = new TestingInterface(in);
+  InputProcessor inputProcessor(interface);
+
+  // look in InputProcessor.cpp to understand what I need here
+  inputProcessor.normalModeInput(b, 'l', "");
+  inputProcessor.normalModeInput(b, 'x', "");
 
   // look in buffer.h to understand what I need here
   string new_contents = b.contents.front();

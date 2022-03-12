@@ -11,7 +11,7 @@
 
 #include "window.h"
 #include "buffer.h"
-#include "commands.h"
+#include "InputProcessor.h"
 #include "cursor.h"
 
 using namespace std;
@@ -26,6 +26,8 @@ char* getFileToOpen(int argc, char** argv){
 }
 
 int main(int argc, char** argv){
+    Interface *interface = new NcursesInterface();
+    InputProcessor inputProcessor = InputProcessor(interface);
     char* fname = getFileToOpen(argc, argv);
     Buffer buffer = Buffer(fname);
     initscr();			/* Start curses mode 		  */
@@ -36,10 +38,10 @@ int main(int argc, char** argv){
 
     do{
         window.display(buffer);
-        quit = handle_commands(buffer);
+        quit = inputProcessor.handle_commands(buffer);
     } while(!quit);
-	endwin();			/* End curses mode		  */
+    endwin();			/* End curses mode		  */
     cursorBlock();
-
+    delete interface;
     return 0;
 }

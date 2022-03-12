@@ -1,5 +1,5 @@
 #include "buffer.h"
-#include "commands.h"
+#include "InputProcessor.h"
 #include "cursor.h"
 #include "interface.h"
 #include <ncurses.h>
@@ -7,10 +7,10 @@
 #include <string>
 
 using namespace std;
-bool normalModeInput(Buffer &b, char ch);
-void insertModeInput(Buffer &b, char ch);
 
-bool handle_commands(Buffer &b){
+InputProcessor::InputProcessor(Interface* interface) : interface{interface} {}
+
+bool InputProcessor::handle_commands(Buffer &b){
      char ch = getch();
 
      if(b.mode == NORMAL) {
@@ -24,7 +24,7 @@ bool handle_commands(Buffer &b){
      return false;
 }
 
-Command ex_command_mode(Buffer &b, Interface *interface){ 
+Command InputProcessor::ex_command_mode(Buffer &b){ 
     int row, col;
     int savedY, savedX;
     getmaxyx(stdscr, row, col);
@@ -77,7 +77,7 @@ Command ex_command_mode(Buffer &b, Interface *interface){
     return UNKNOWN;
 }
 
-bool normalModeInput(Buffer &b, char ch, string state){
+bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
     state += ch;
     try{
         if(state == "O"){
@@ -128,9 +128,7 @@ bool normalModeInput(Buffer &b, char ch, string state){
 	if(state == "d") normalModeInput(b, getch(), state);
         if(state == "dd") b.deleteLine();          
         if(state == ":"){
-          Interface *interface = new NcursesInterface();
-          Command cmd = ex_command_mode(b, interface);
-          delete interface;
+          Command cmd = ex_command_mode(b);
           if(cmd == QUIT){
             return true;
           }
@@ -141,11 +139,11 @@ bool normalModeInput(Buffer &b, char ch, string state){
     return false;
 }
 
-bool normalModeInput(Buffer &b, char ch){
+bool InputProcessor::normalModeInput(Buffer &b, char ch){
     return normalModeInput(b, ch, "");
 }
 
-void insertModeInput(Buffer &b, char ch){
+void InputProcessor::insertModeInput(Buffer &b, char ch){
     cursorLine();
     switch(ch){
         //Backspace

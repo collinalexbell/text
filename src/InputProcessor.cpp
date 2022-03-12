@@ -124,7 +124,7 @@ bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
           b.deleteAtCursor();
         }
         if(state == "f") normalModeInput(b, interface->getChar(), state);
-        if(state[0] == 'f' && state != "f") b.find_character_forward(state[1]);
+        if(state[0] == 'f' && state.length() > 1) b.find_character_forward(state[1]);
         if(state == "g") normalModeInput(b, interface->getChar(), state);
         if(state == "gg") moveCursor(b, 0);
 	if(state == "d") normalModeInput(b, interface->getChar(), state);

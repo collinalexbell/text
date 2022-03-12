@@ -95,13 +95,24 @@ TEST_CASE("'x' should delete the character the cursor is on") {
 }
 
 TEST_CASE("'f' should find matching next character in line"){
-  string contents = "asdf\n";
-  Buffer b = Buffer(contents);
-
-  char *in = (char*)malloc(2);
-  strcpy(in, "fd");
-  TestingInterface *interface = new TestingInterface(in);
-  InputProcessor inputProcessor(interface);
-  inputProcessor.handle_commands(b);
-  REQUIRE(b.cursorX == 2);
+  SECTION("character exists"){
+    string contents = "asdf\n";
+    Buffer b = Buffer(contents);
+    char *in = (char*)malloc(2);
+    strcpy(in, "fd");
+    TestingInterface *interface = new TestingInterface(in);
+    InputProcessor inputProcessor(interface);
+    inputProcessor.handle_commands(b);
+    REQUIRE(b.cursorX == 2);
+  }
+  SECTION("character doesn't exist"){
+    string contents = "asff\n";
+    Buffer b = Buffer(contents);
+    char *in = (char*)malloc(2);
+    strcpy(in, "fd");
+    TestingInterface *interface = new TestingInterface(in);
+    InputProcessor inputProcessor(interface);
+    inputProcessor.handle_commands(b);
+    REQUIRE(b.cursorX == 0);
+  }
 }

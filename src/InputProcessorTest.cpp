@@ -93,3 +93,25 @@ TEST_CASE("'x' should delete the character the cursor is on") {
   string new_contents = b.contents.front();
   REQUIRE(new_contents.compare(string("adf")) == 0);
 }
+
+Buffer make_buffer_and_handle_commands(string bufferContents, const char* inputs) {
+  Buffer b = Buffer(bufferContents);
+  char *in = (char*)malloc(2);
+  strcpy(in, inputs);
+  TestingInterface *interface = new TestingInterface(in);
+  InputProcessor inputProcessor(interface);
+  inputProcessor.handle_commands(b);
+  return b;
+}
+
+TEST_CASE("'f' should find matching next character in line"){
+  string contents = "asdf\n";
+  SECTION("character exists"){
+    Buffer b = make_buffer_and_handle_commands(contents, "fd");
+    REQUIRE(b.cursorX == 2);
+  }
+  SECTION("character doesn't exist"){
+    Buffer b = make_buffer_and_handle_commands(contents, "fg");
+    REQUIRE(b.cursorX == 0);
+  }
+}

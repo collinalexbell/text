@@ -6,15 +6,18 @@
 
 using namespace std;
 
-
 enum BufferMode {INSERT, NORMAL, COMMAND};
 enum Direction {
     UP, DOWN, LEFT, RIGHT,
     BEGINNING_OF_LINE, END_OF_LINE,
     NULLDIR};
 
-class Buffer{
+struct CopyBuffer {
+  bool isLine;
+  string contents;
+};
 
+class Buffer{
   public:
     string filename;
     bool contentsChangedB = true;
@@ -27,14 +30,16 @@ class Buffer{
     int cursorX = 0;
     list<string> contents;
     list<string>::iterator cursorY;
+    struct CopyBuffer copy_buffer{false, ""};
     Direction lastYMove = UP;
     BufferMode mode = NORMAL;
 
     Buffer(string contents);
     Buffer(char* fname);
     int cursorXBound();
-    void deleteAtCursor();
-    void deleteLine();
+    void delete_at_cursor();
+    void delete_line();
+    void paste_after();
 
     void find_character_forward(char c);
 

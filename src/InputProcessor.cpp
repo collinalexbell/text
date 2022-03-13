@@ -121,14 +121,15 @@ bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
             cursorLine();
         }
         if(state == "x") {
-          b.deleteAtCursor();
+          b.delete_at_cursor();
         }
         if(state == "f") normalModeInput(b, interface->getChar(), state);
         if(state[0] == 'f' && state.length() > 1) b.find_character_forward(state[1]);
         if(state == "g") normalModeInput(b, interface->getChar(), state);
         if(state == "gg") moveCursor(b, 0);
 	if(state == "d") normalModeInput(b, interface->getChar(), state);
-        if(state == "dd") b.deleteLine();          
+        if(state == "dd") b.delete_line();          
+        if(state == "p") b.paste_after();
         if(state == ":"){
           Command cmd = ex_command_mode(b);
           if(cmd == QUIT){
@@ -157,7 +158,7 @@ void InputProcessor::insertModeInput(Buffer &b, char ch){
                 b.joinLineAtCursor();
             } else {
                 b.moveCursor(LEFT);
-                b.deleteAtCursor();
+                b.delete_at_cursor();
             }
             break;
         //Escape

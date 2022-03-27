@@ -92,11 +92,21 @@ TEST_CASE("moveCursor(RIGHT) doesn't allow movement out of contents bounds",
 }
 
 TEST_CASE("find_character_forward()") {
-  string contents = "asdf";
-  Buffer b(contents);
-  b.moveCursor(RIGHT);
-  b.find_character_forward('d');
-  REQUIRE(b.cursorX == 2);
+
+  SECTION("finds the character") {
+    string contents = "asdf";
+    Buffer b(contents);
+    b.moveCursor(RIGHT);
+    b.find_character_forward('d');
+    REQUIRE(b.cursorX == 2);
+  }
+
+  SECTION("finds the next character if currently on the character") {
+    string contents = "aa";
+    Buffer b(contents);
+    b.find_character_forward('a');
+    REQUIRE(b.cursorX == 1);
+  }
 }
 
 TEST_CASE("find_character_backward()") {
@@ -108,6 +118,7 @@ TEST_CASE("find_character_backward()") {
     b.find_character_backward('a');
     REQUIRE(b.cursorX == 0);
   }
+
   SECTION("finds the next character if currently on the character") {
     string contents = "aa";
     Buffer b(contents);
@@ -115,6 +126,7 @@ TEST_CASE("find_character_backward()") {
     b.find_character_backward('a');
     REQUIRE(b.cursorX == 0);
   }
+
   SECTION("doesn't break when cursorX is 0"){
     string contents = "a";
     Buffer b(contents);

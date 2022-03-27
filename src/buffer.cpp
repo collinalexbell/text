@@ -37,6 +37,17 @@ void Buffer::find_character_forward(char c){
   }
 }
 
+void Buffer::find_character_backward(char c){
+  string reversed(*cursorY);
+  std::reverse(reversed.begin(), reversed.end());
+  int reversed_pos = reversed.find(c, reversed.length() - cursorX); 
+  int pos = reversed.length() - reversed_pos - 1;
+  // reversed pos will contain the sentinel
+  if(reversed_pos >= 0) {
+    cursorX = pos;
+  }
+}
+
 Buffer::Buffer(string contents){
     mode = NORMAL;
     initContents(contents);

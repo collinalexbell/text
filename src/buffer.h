@@ -42,6 +42,7 @@ class Buffer{
     void paste_after();
 
     void find_character_forward(char c);
+    void find_character_backward(char c);
 
 
     //--------------------

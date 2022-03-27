@@ -32,14 +32,6 @@ TEST_CASE("findEndOfLine() ", "[buffer]") {
   REQUIRE(end == 3); 
 }
 
-/*
- *void Buffer::delete_at_cursor(){
-    if(cursorY != contents.end() && cursorX < cursorY->size()){
-        cursorY->erase(cursorX, 1);
-        contentsChangedB = true;
-    }
-}
-*/
 TEST_CASE("delete_at_cursor() ", "[buffer]") {
   string contents = "foo\n";
   Buffer b(contents);

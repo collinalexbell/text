@@ -100,12 +100,27 @@ TEST_CASE("find_character_forward()") {
 }
 
 TEST_CASE("find_character_backward()") {
-  string contents = "asdf";
-  Buffer b(contents);
-  b.moveCursor(RIGHT);
-  b.moveCursor(RIGHT);
-  b.find_character_backward('a');
-  REQUIRE(b.cursorX == 0);
+  SECTION("finds the character") {
+    string contents = "asdf";
+    Buffer b(contents);
+    b.moveCursor(RIGHT);
+    b.moveCursor(RIGHT);
+    b.find_character_backward('a');
+    REQUIRE(b.cursorX == 0);
+  }
+  SECTION("finds the next character if currently on the character") {
+    string contents = "aa";
+    Buffer b(contents);
+    b.moveCursor(RIGHT);
+    b.find_character_backward('a');
+    REQUIRE(b.cursorX == 0);
+  }
+  SECTION("doesn't break when cursorX is 0"){
+    string contents = "a";
+    Buffer b(contents);
+    b.find_character_backward('a');
+    REQUIRE(b.cursorX == 0);
+  }
 }
 
 TEST_CASE("paste()") {

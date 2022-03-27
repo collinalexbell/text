@@ -118,6 +118,18 @@ TEST_CASE("'f' should find matching next character in line"){
   }
 }
 
+TEST_CASE("'F' should find matching previous character in line"){
+  string contents = "asdf\n";
+  SECTION("character exists"){
+    Buffer b = make_buffer_and_handle_commands(contents, "llFa", 3);
+    REQUIRE(b.cursorX == 0);
+  }
+  SECTION("character doesn't exist"){
+    Buffer b = make_buffer_and_handle_commands(contents, "llFz", 3);
+    REQUIRE(b.cursorX == 2);
+  }
+}
+
 TEST_CASE("'p' should paste"){
   SECTION("paste after 'dd'"){
     string contents = "asdf\nqwerty\n";

@@ -99,6 +99,15 @@ TEST_CASE("find_character_forward()") {
   REQUIRE(b.cursorX == 2);
 }
 
+TEST_CASE("find_character_backward()") {
+  string contents = "asdf";
+  Buffer b(contents);
+  b.moveCursor(RIGHT);
+  b.moveCursor(RIGHT);
+  b.find_character_backward('a');
+  REQUIRE(b.cursorX == 0);
+}
+
 TEST_CASE("paste()") {
   SECTION("paste_after() following a delete_line()"){
     string contents = "asdf\nqwerty\n";

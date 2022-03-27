@@ -31,7 +31,7 @@ int Buffer::findEndOfLine(){
 }
 
 void Buffer::find_character_forward(char c){
-  int pos = cursorY->find(c, cursorX); 
+  int pos = cursorY->find(c, cursorX+1); 
   if(pos >= 0) {
     cursorX = pos;
   }

@@ -157,3 +157,10 @@ TEST_CASE("paste()") {
     REQUIRE(b.cursorX == 1);
   }
 }
+
+TEST_CASE("replace_at_cursor()"){
+    string contents = "a\n";
+    Buffer b(contents);
+    b.replace_at_cursor('s');
+    REQUIRE(b.cursorY->at(b.cursorX) == 's');
+}

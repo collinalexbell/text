@@ -123,6 +123,12 @@ void Buffer::insertAtCursor(char ch){
     contentsChangedB = true;
 }
 
+void Buffer::replace_at_cursor(char ch){
+  if(cursorY->length() > 0) {
+    (*cursorY)[cursorX] = ch;
+  }
+}
+
 void Buffer::resetXCursorToCacheIfNeeded(){
     if(cursorXReset > 0){
         cursorX = cursorXReset;
@@ -250,3 +256,4 @@ void Buffer::paste_after(){
   }
   contentsChangedB = true;
 }
+

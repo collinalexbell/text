@@ -147,3 +147,9 @@ TEST_CASE("'p' should paste"){
     REQUIRE(b.cursorX == 1);
   }
 }
+
+TEST_CASE("'r' should replace"){
+  string contents = "a\n";
+  Buffer b = make_buffer_and_handle_commands(contents, "rs", 1);
+  REQUIRE(b.cursorY->at(b.cursorX) == 's');
+}

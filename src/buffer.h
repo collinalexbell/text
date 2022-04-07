@@ -70,6 +70,7 @@ class Buffer{
 
     void initContents(string raw);
     void insertAtCursor(char ch);
+    void replace_at_cursor(char ch);
     void insertLineAboveCursor();
     void insertLineAfterCursor();
     void joinLineAtCursor();

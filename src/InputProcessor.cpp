@@ -129,9 +129,11 @@ bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
         if(state[0] == 'F' && state.length() > 1) b.find_character_backward(state[1]);
         if(state == "g") normalModeInput(b, interface->getChar(), state);
         if(state == "gg") moveCursor(b, 0);
-	if(state == "d") normalModeInput(b, interface->getChar(), state);
+        if(state == "d") normalModeInput(b, interface->getChar(), state);
         if(state == "dd") b.delete_line();          
         if(state == "p") b.paste_after();
+        if(state == "r") normalModeInput(b, interface->getChar(), state);
+        if(state[0] == 'r' && state.length() > 1) b.replace_at_cursor(state[1]);
         if(state == ":"){
           Command cmd = ex_command_mode(b);
           if(cmd == QUIT){

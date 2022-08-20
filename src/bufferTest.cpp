@@ -1,5 +1,5 @@
 #include "buffer.h"
-#include "catch.hpp"
+#include "catch_amalgamated.hpp"
 
 TEST_CASE("findBeginningOfLine() ", "[buffer]") {
   string contents = "foo\n  bar\nbaz\n";

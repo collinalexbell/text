@@ -1,5 +1,5 @@
 #include "InputProcessor.h"
-#include "catch.hpp"
+#include "catch_amalgamated.hpp"
 #include "buffer.h"
 #include "interface.h"
 #include <stdio.h>
@@ -145,6 +145,18 @@ TEST_CASE("'p' should paste"){
     Buffer b = make_buffer_and_handle_commands(contents, "xp", 2);
     REQUIRE(b.contents.front() == string("sadf"));
     REQUIRE(b.cursorX == 1);
+  }
+}
+
+
+TEST_CASE("'P' should paste"){
+  SECTION("paste before 'dd'"){
+    string contents = "asdf\nqwerty\n";
+    Buffer b = make_buffer_and_handle_commands(contents, "jddP", 3);
+    REQUIRE(*b.cursorY == string("qwerty"));
+    REQUIRE(b.contents.front() == string("asdf"));
+    b.contents.pop_front();
+    REQUIRE(b.contents.front() == string("qwerty"));
   }
 }
 

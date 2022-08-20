@@ -8,6 +8,7 @@ class Interface {
     virtual void moveAndReadString(int y, int x, char* str) = 0;
     virtual void moveAndWriteString(int y, int x, char* str) = 0;
     virtual void getCursorPosition(int &y, int &x) = 0;
+    virtual ~Interface() = default;
 
 };
 

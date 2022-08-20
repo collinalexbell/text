@@ -132,6 +132,7 @@ bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
         if(state == "d") normalModeInput(b, interface->getChar(), state);
         if(state == "dd") b.delete_line();          
         if(state == "p") b.paste_after();
+        if(state == "P") b.paste_before();
         if(state == "r") normalModeInput(b, interface->getChar(), state);
         if(state[0] == 'r' && state.length() > 1) b.replace_at_cursor(state[1]);
         if(state == ":"){

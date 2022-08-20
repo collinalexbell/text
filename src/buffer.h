@@ -40,6 +40,7 @@ class Buffer{
     void delete_at_cursor();
     void delete_line();
     void paste_after();
+    void paste_before();
 
     void find_character_forward(char c);
     void find_character_backward(char c);

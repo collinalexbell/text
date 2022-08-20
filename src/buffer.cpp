@@ -257,3 +257,11 @@ void Buffer::paste_after(){
   contentsChangedB = true;
 }
 
+void Buffer::paste_before(){
+  if(copy_buffer.isLine) {
+    auto it = cursorY;
+    contents.insert(it, copy_buffer.contents);
+    cursorY--;
+  } 
+  contentsChangedB = true;
+}

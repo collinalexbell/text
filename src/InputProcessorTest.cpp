@@ -23,8 +23,7 @@ class TestingInterface: public Interface {
     TestingInterface(char *in): in(in) {
       this->y = -1;
     }
-    char getChar() {
-      if(*in != '\0'){
+    char getChar() {      if(*in != '\0'){
         char rv = *in;
         in++;
         return rv;
@@ -63,6 +62,20 @@ TEST_CASE("ex_command_mode quit", "[command]"){
   REQUIRE(cmd == QUIT);
   delete b;
 }
+
+TEST_CASE("command mode <del>"){
+  Buffer *b = new MockBuffer();
+  
+  char *in = (char*)malloc(3);
+  strcpy(in, "a\bq");
+  Interface *interface = new TestingInterface(in);
+  InputProcessor inputProcessor(interface);
+  
+  Command cmd = inputProcessor.ex_command_mode(*b);
+  REQUIRE(cmd == QUIT);
+  delete b;  
+}
+
 
 TEST_CASE("command moves cursor of interface back to buffer cursor when on second line"){
   Buffer *b = new MockBuffer("readme\nreadme\nreadme\n");

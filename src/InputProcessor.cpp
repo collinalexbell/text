@@ -43,16 +43,19 @@ Command InputProcessor::ex_command_mode(Buffer &b){
     refresh();
 
     string cmd;
-    int cmd_i=0;
 
     char c;
 
-    while(cmd_i<20 && c != 10){
+    while(cmd.size()<20 && c != 10){
         c = interface->getChar();
-        addch(c);
-        refresh();
-        if(c != 10) cmd+=c;
-        cmd_i++;
+        if(c != 127 /*del*/) {
+          addch(c);
+          refresh();
+          if(c != 10) cmd+=c;
+        } else if(cmd.size() > 0){
+          mvdelch(row, cmd.size());
+          cmd.pop_back();
+        }
 
     }
 

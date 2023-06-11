@@ -39,6 +39,7 @@ class Buffer{
     int cursorXBound();
     void delete_at_cursor();
     void delete_line();
+    void yank_line();
     void paste_after();
     void paste_before();
 

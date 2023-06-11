@@ -78,6 +78,11 @@ void Buffer::delete_line(){
   contentsChangedB = true;
 }
 
+void Buffer::yank_line(){
+  copy_buffer.contents = *cursorY;
+  copy_buffer.isLine = true;  
+}
+
 void Buffer::joinLineAtCursor(){
     if(distance(cursorY, contents.end())>1){
         auto it = cursorY;

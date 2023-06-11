@@ -158,6 +158,15 @@ TEST_CASE("'P' should paste"){
     b.contents.pop_front();
     REQUIRE(b.contents.front() == string("qwerty"));
   }
+  SECTION("paste after 'yy'"){
+    string contents = "asdf\n";
+    Buffer b = make_buffer_and_handle_commands(contents, "yyP", 2);
+    REQUIRE(*b.cursorY == string("asdf"));
+    REQUIRE(b.contents.size() == 2);
+    REQUIRE(b.contents.front() == string("asdf"));
+    b.contents.pop_front();
+    REQUIRE(b.contents.front() == string("asdf"));    
+  }
 }
 
 TEST_CASE("'r' should replace"){

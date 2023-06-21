@@ -67,7 +67,7 @@ TEST_CASE("command mode <del>"){
   Buffer *b = new MockBuffer();
   
   char *in = (char*)malloc(3);
-  strcpy(in, "a\bq");
+  strcpy(in, "a\x7Fq\n");
   Interface *interface = new TestingInterface(in);
   InputProcessor inputProcessor(interface);
   

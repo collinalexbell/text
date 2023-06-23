@@ -16,6 +16,8 @@ struct BufferBlit {
     bool moveCursor, shouldBlit;
 };
 
+enum Color {white=1, green=2};
+
 struct Window {
 
     int height, width;
@@ -25,7 +27,10 @@ struct Window {
 
     Window(){
         getmaxyx(stdscr, height, width);
+        initColor();
     }
+    void initColor();
+    void changeColor(Color color);
     void blit(BufferBlit b);
     int computeScroll(Buffer &b);
     void computeBufferSegment(int scroll, Buffer &b, BufferBlit &rv);

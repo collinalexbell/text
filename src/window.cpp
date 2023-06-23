@@ -134,3 +134,12 @@ void Window::display(Buffer &b){
     if(bb.moveCursor)
         moveCursor(bb);
 }
+
+void Window::initColor(){
+    init_pair(1, COLOR_WHITE, -1);
+    init_pair(2, COLOR_GREEN, -1);
+}
+
+void Window::changeColor(Color color){
+    attron(COLOR_PAIR(color));
+}

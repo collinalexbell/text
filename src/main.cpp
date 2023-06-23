@@ -25,12 +25,18 @@ char* getFileToOpen(int argc, char** argv){
     exit(1);
 }
 
+void color() {
+    start_color();
+    use_default_colors();
+}
+
 int main(int argc, char** argv){
     Interface *interface = new NcursesInterface();
     InputProcessor inputProcessor = InputProcessor(interface);
     char* fname = getFileToOpen(argc, argv);
     Buffer buffer = Buffer(fname);
     initscr();			/* Start curses mode 		  */
+    color();
     Window window = Window();
     noecho();
 

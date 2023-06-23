@@ -64,7 +64,7 @@ Buffer::Buffer(char* fname){
 
 void Buffer::delete_at_cursor(){
     copy_buffer.contents = string(1, (*cursorY)[cursorX]);
-    copy_buffer.isLine = false;
+    copy_buffer.hasNewline = false;
     if(cursorY != contents.end() && cursorX < cursorY->size()){
         cursorY->erase(cursorX, 1);
         contentsChangedB = true;
@@ -73,14 +73,25 @@ void Buffer::delete_at_cursor(){
 
 void Buffer::delete_line(){
   copy_buffer.contents = *cursorY;
-  copy_buffer.isLine = true;
+  copy_buffer.hasNewline = true;
   cursorY = contents.erase(cursorY);
+  contentsChangedB = true;
+}
+
+void Buffer::delete_lines(int n){
+  copy_buffer.hasNewline = true;
+  std::stringstream ss;
+  for(int i=0; i<n; i++){
+    ss << *cursorY << "\n";
+    cursorY = contents.erase(cursorY);
+  }
+  copy_buffer.contents = ss.str();
   contentsChangedB = true;
 }
 
 void Buffer::yank_line(){
   copy_buffer.contents = *cursorY;
-  copy_buffer.isLine = true;  
+  copy_buffer.hasNewline = true;  
 }
 
 void Buffer::joinLineAtCursor(){
@@ -252,10 +263,14 @@ void Buffer::save(){
 }
 
 void Buffer::paste_after(){
-  if(copy_buffer.isLine) {
+  std::stringstream ss(copy_buffer.contents);
+  if(copy_buffer.hasNewline) {
+    string line;
     auto it = cursorY;
-    contents.insert(++it, copy_buffer.contents);
-    cursorY++;
+    while(std::getline(ss, line, '\n')){
+      contents.insert(++it, line);
+      cursorY++;
+    }
   } else {
     cursorY->insert(++cursorX, copy_buffer.contents);
   }
@@ -263,10 +278,14 @@ void Buffer::paste_after(){
 }
 
 void Buffer::paste_before(){
-  if(copy_buffer.isLine) {
+  std::stringstream ss(copy_buffer.contents);
+  if(copy_buffer.hasNewline) {
+    string line;
     auto it = cursorY;
-    contents.insert(it, copy_buffer.contents);
-    cursorY--;
+    while(std::getline(ss,line, '\n')){
+      contents.insert(it, line);
+      cursorY--;
+    }
   } 
   contentsChangedB = true;
 }

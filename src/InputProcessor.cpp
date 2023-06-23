@@ -132,8 +132,21 @@ bool InputProcessor::normalModeInput(Buffer &b, char ch, string state){
         if(state[0] == 'F' && state.length() > 1) b.find_character_backward(state[1]);
         if(state == "g") normalModeInput(b, interface->getChar(), state);
         if(state == "gg") moveCursor(b, 0);
-        if(state == "d") normalModeInput(b, interface->getChar(), state);
-        if(state == "dd") b.delete_line();
+        if(state[0] == 'd') {
+          int size = state.size();
+          if(size>1 && state[size-1] == 'd'){
+            string middle = state.substr(1,size-2);
+            try {
+              int n = stoi(middle);
+              b.delete_lines(n);
+            }
+            catch(...) {
+	      b.delete_lines(1);      
+            }
+          } else {
+            normalModeInput(b, interface->getChar(), state);
+	  }
+        } 
         if(state == "y") normalModeInput(b, interface->getChar(), state); 
 	if(state == "yy") b.yank_line();
         if(state == "p") b.paste_after();

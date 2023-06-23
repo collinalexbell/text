@@ -13,7 +13,7 @@ enum Direction {
     NULLDIR};
 
 struct CopyBuffer {
-  bool isLine;
+  bool hasNewline;
   string contents;
 };
 
@@ -39,6 +39,7 @@ class Buffer{
     int cursorXBound();
     void delete_at_cursor();
     void delete_line();
+    void delete_lines(int n);
     void yank_line();
     void paste_after();
     void paste_before();

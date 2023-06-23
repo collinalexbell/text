@@ -159,10 +159,7 @@ TEST_CASE("'p' should paste"){
     REQUIRE(b.contents.front() == string("sadf"));
     REQUIRE(b.cursorX == 1);
   }
-}
 
-
-TEST_CASE("'P' should paste"){
   SECTION("paste before 'dd'"){
     string contents = "asdf\nqwerty\n";
     Buffer b = make_buffer_and_handle_commands(contents, "jddP", 3);
@@ -179,6 +176,16 @@ TEST_CASE("'P' should paste"){
     REQUIRE(b.contents.front() == string("asdf"));
     b.contents.pop_front();
     REQUIRE(b.contents.front() == string("asdf"));    
+  }
+}
+
+TEST_CASE("d<x> should delete"){
+  SECTION("d4d"){
+    string contents = "abc\ndef\nghi\nlmn\nopq\nrst\nuvw\n";
+    Buffer b = make_buffer_and_handle_commands(contents, "jd4d",2);
+    REQUIRE(*b.cursorY == string("rst"));
+    REQUIRE(b.contents.size() == 3);
+    REQUIRE(b.contents.front() == string("abc"));
   }
 }
 
